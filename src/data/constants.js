@@ -1,10 +1,10 @@
 // Niveles de gravedad usados para colorear el mapa y las fichas.
 export const STATUS_LEVELS = {
-  critico: { color: '#dc2626' },
-  alto: { color: '#ea580c' },
-  medio: { color: '#d97706' },
-  estable: { color: '#16a34a' },
-  sin_datos: { color: '#94a3b8' },
+  critico: { color: '#dc2626', label: 'Crítico' },
+  alto: { color: '#ea580c', label: 'Alto' },
+  medio: { color: '#d97706', label: 'Medio' },
+  estable: { color: '#16a34a', label: 'Estable' },
+  sin_datos: { color: '#94a3b8', label: 'Sin datos' },
 }
 
 export const STATUS_ORDER = ['critico', 'alto', 'medio', 'estable', 'sin_datos']
@@ -53,6 +53,30 @@ export const VERIFICATION_KEYS = ['verificado', 'pendiente', 'sin_actualizar']
 export const UPDATE_TYPES = ['estado', 'necesidades', 'recursos', 'sangre', 'donacion', 'otro']
 
 export const STATES = ['Distrito Capital', 'Miranda', 'La Guaira']
+
+// ---------------------------------------------------------------------------
+// Compatibilidad con componentes existentes (admin). KIND_META mapea el campo
+// heredado `kind` y las categorias nuevas a color + etiqueta. Sin emojis.
+// ---------------------------------------------------------------------------
+const CATEGORY_LABELS_ES = {
+  hospital: 'Hospital',
+  punto_medico: 'Punto médico',
+  centro_acopio: 'Centro de acopio',
+  refugio: 'Refugio',
+  organizacion: 'Organización comunitaria',
+  rescate: 'Equipo de rescate',
+  parroquia: 'Parroquia',
+  otro: 'Otro punto',
+}
+
+export const KIND_META = Object.fromEntries(
+  CATEGORIES.map((c) => [c.key, { color: c.color, icon: '', label: CATEGORY_LABELS_ES[c.key] || 'Otro punto' }]),
+)
+
+export const NEW_KINDS = REPORTABLE_CATEGORIES.map((key) => ({
+  value: key,
+  label: CATEGORY_LABELS_ES[key] || 'Otro punto',
+}))
 
 // Sugerencias comunes de necesidades / recursos (chips en formularios).
 export const COMMON_NEEDS = [

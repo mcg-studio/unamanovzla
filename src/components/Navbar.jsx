@@ -7,6 +7,7 @@ const NAV_ITEMS = [
   { key: 'directory', icon: 'list', label: 'nav.directory' },
   { key: 'donate', icon: 'heart', label: 'nav.donate' },
   { key: 'updates', icon: 'bell', label: 'nav.updates' },
+  { key: 'about', icon: 'info', label: 'nav.about' },
 ]
 
 export default function Navbar({ route, onNavigate, onReport, onAdmin, adminPending }) {
