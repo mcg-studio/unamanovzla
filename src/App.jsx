@@ -10,16 +10,19 @@ import SearchBox from './components/SearchBox'
 import NewLocationForm from './components/NewLocationForm'
 import DonateMatcher from './components/DonateMatcher'
 import UpdatesFeed from './components/UpdatesFeed'
-import Disclaimer from './components/Disclaimer'
 import ResetPassword from './components/ResetPassword'
-import HomeHero from './components/HomeHero'
+import IntroCard from './components/IntroCard'
+import MapStats from './components/MapStats'
 import DirectoryPage from './components/DirectoryPage'
 import AboutPage from './components/AboutPage'
+import Icon from './components/Icons'
+import { useI18n } from './lib/i18n'
 import { repo } from './lib/repository'
 import { STATES } from './data/constants'
 import { matchLocation, normalize } from './lib/search'
 
 export default function App() {
+  const { t } = useI18n()
   const [locations, setLocations] = useState([])
   const [version, setVersion] = useState(0)
   const [loading, setLoading] = useState(true)
@@ -130,20 +133,7 @@ export default function App() {
         onManageAdmins={() => setShowAdmins(true)}
       />
 
-      <Disclaimer />
-
       <div className="main">
-        {view === 'map' && (
-          <HomeHero
-            locations={locations}
-            onExplore={() => {
-              const el = document.querySelector('.map-wrap')
-              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
-            }}
-            onReport={() => navigate('report')}
-          />
-        )}
-
         <div className="map-wrap" style={{ display: showMap ? 'block' : 'none' }}>
           <MapView
             locations={filtered}
@@ -182,12 +172,22 @@ export default function App() {
             </div>
           </div>
 
+          {view === 'map' && <IntroCard />}
+          {view === 'map' && <MapStats locations={locations} />}
+
           <Legend />
 
           {loading && (
             <div className="legend" style={{ bottom: 'auto', top: 70, left: '50%', transform: 'translateX(-50%)' }}>
               Cargando ubicaciones…
             </div>
+          )}
+
+          {view === 'map' && !selected && (
+            <button className="fab-report" onClick={() => navigate('report')}>
+              <Icon name="plus" size={20} />
+              <span>{t('map.report')}</span>
+            </button>
           )}
 
           {selected && !showNewForm && (

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { repo } from '../lib/repository'
-import { STATES } from '../data/constants'
+import { STATES, SUPPLY_CHIPS } from '../data/constants'
 import Icon from './Icons'
 
 const STEPS = ['Ubicación', 'Tipo', 'Necesidades', 'Detalles']
@@ -17,7 +17,6 @@ const TYPE_CARDS = [
   { id: 'otro', label: 'Otro', kind: 'otro', icon: 'pin' },
 ]
 
-const SUPPLY_CHIPS = ['Agua', 'Comida', 'Medicinas', 'Sangre', 'Colchones', 'Generadores', 'Transporte', 'Pañales', 'Otro']
 const PEOPLE_RANGES = ['1-10', '10-50', '50-100', '100+']
 
 // Geocodificacion inversa best-effort con Nominatim para sugerir estado y

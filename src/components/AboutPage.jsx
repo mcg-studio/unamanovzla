@@ -26,9 +26,15 @@ export default function AboutPage({ onReport }) {
           <span className="about__flag" aria-hidden>
             <span /><span /><span />
           </span>
+          <span className="about__badge">{t('quake.badge')}</span>
           <h1 className="about__title">{t('about.title')}</h1>
           <p className="about__subtitle">{t('about.subtitle')}</p>
         </header>
+
+        <p className="about__quake">
+          <Icon name="alert" size={16} />
+          <span>{t('quake.context')}</span>
+        </p>
 
         <section className="about__body">
           <p>{t('about.p1')}</p>

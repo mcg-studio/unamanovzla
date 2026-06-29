@@ -51,6 +51,9 @@ export const UPDATE_TYPES = [
 
 export const STATES = ['Distrito Capital', 'Miranda', 'La Guaira']
 
+// Vocabulario compartido de suministros (formulario de reporte y flujo de donar).
+export const SUPPLY_CHIPS = ['Agua', 'Comida', 'Medicinas', 'Sangre', 'Colchones', 'Generadores', 'Transporte', 'Pañales', 'Otro']
+
 // Estado inicial (vacio) de una ubicacion antes de cualquier actualizacion.
 export function emptyStatus() {
   return {

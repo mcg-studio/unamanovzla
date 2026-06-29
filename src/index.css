@@ -18,6 +18,7 @@
 
   --shadow: 0 4px 16px rgba(15, 23, 42, 0.12);
   --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 12px 32px rgba(15, 23, 42, 0.25);
 
   /* Acentos sutiles de la bandera de Venezuela */
   --ve-yellow: #f5c518;
@@ -253,25 +254,147 @@ a { color: var(--accent); }
 .donate__name { font-weight: 700; }
 .donate__match { font-size: 13px; margin: 6px 0; }
 .donate__tag {
-  display: inline-block; background: #dcfce7; color: #166534; border-radius: 999px;
+  display: inline-block; background: #f1f5f9; color: #475569; border-radius: 999px;
   padding: 1px 8px; font-size: 12px; font-weight: 600; margin: 0 4px 4px 0;
 }
+.donate__tag--fill { background: #dcfce7; color: #166534; }
 
-/* Legend */
+/* Selector de modo del flujo de donar */
+.donate__modes { display: flex; flex-direction: column; gap: 12px; padding: 6px 0 4px; }
+.donate__mode {
+  display: flex; align-items: center; gap: 14px; width: 100%; text-align: left;
+  border: 1px solid var(--border); border-radius: 14px; padding: 16px;
+  background: var(--surface, #fff); cursor: pointer; transition: border-color .15s, transform .1s;
+}
+.donate__mode:hover { border-color: var(--brand); }
+.donate__mode:active { transform: scale(0.99); }
+.donate__mode-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 44px; height: 44px; flex: none; border-radius: 12px;
+  background: #fef2f2; color: var(--brand);
+}
+.donate__mode-text { flex: 1; font-weight: 700; font-size: 15px; }
+.donate__mode-chev { color: var(--muted); flex: none; }
+
+.donate__back {
+  display: inline-flex; align-items: center; justify-content: center;
+  border: none; background: none; cursor: pointer; padding: 0; margin-right: 6px;
+  color: var(--muted); vertical-align: middle;
+}
+
+.donate__meta {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  font-size: 13px; color: var(--muted); margin-top: 2px;
+}
+.donate__distance { display: inline-flex; align-items: center; gap: 3px; font-weight: 600; color: #475569; }
+.donate__match-label { font-size: 12px; font-weight: 700; color: var(--muted); margin-right: 6px; }
+.donate__how {
+  display: flex; flex-direction: column; gap: 3px;
+  background: #f8fafc; border: 1px solid var(--border); border-radius: 10px;
+  padding: 8px 10px; margin-top: 10px; font-size: 13px;
+}
+.donate__how-label { display: inline-flex; align-items: center; gap: 5px; font-weight: 700; color: var(--brand); }
+.donate__geo {
+  display: inline-flex; align-items: center; gap: 7px; width: 100%; justify-content: center;
+  margin-top: 12px; padding: 9px 12px; font-size: 13px; font-weight: 600;
+  border: 1px dashed var(--border); border-radius: 10px; background: none;
+  color: var(--muted); cursor: pointer;
+}
+.donate__geo--on { border-style: solid; border-color: #16a34a; color: #166534; background: #f0fdf4; }
+
+/* Legend (colapsable) */
 .legend {
   position: absolute;
-  bottom: 16px; left: 12px;
+  bottom: 76px; left: 12px;
   z-index: 1000;
-  background: rgba(255,255,255,0.96);
-  padding: 10px 12px;
-  border-radius: 12px;
-  box-shadow: var(--shadow);
   font-size: 12px;
+}
+.legend__toggle {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.96); border: 1px solid var(--border);
+  border-radius: 999px; padding: 8px 12px; font-size: 12px; font-weight: 700;
+  color: var(--text); box-shadow: var(--shadow);
+}
+.legend__chev { transition: transform 0.15s ease; }
+.legend__chev--open { transform: rotate(180deg); }
+.legend__panel {
+  margin-top: 8px;
+  background: rgba(255,255,255,0.98);
+  padding: 10px 12px; border-radius: 12px; box-shadow: var(--shadow);
+  border: 1px solid var(--border);
 }
 .legend h4 { margin: 0 0 6px; font-size: 12px; }
 .legend__row { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
 .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
 .swatch { width: 14px; height: 14px; border-radius: 3px; display: inline-block; }
+
+/* Tira de estadisticas sobre el mapa */
+.mapstats {
+  position: absolute;
+  bottom: 16px; left: 50%; transform: translateX(-50%);
+  z-index: 1000; width: max-content; max-width: calc(100% - 24px);
+}
+.mapstats__strip {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.96); border: 1px solid var(--border);
+  border-radius: 999px; box-shadow: var(--shadow);
+  padding: 6px 8px; overflow-x: auto; scrollbar-width: none;
+}
+.mapstats__strip::-webkit-scrollbar { display: none; }
+.mapstats__pill {
+  display: inline-flex; align-items: baseline; gap: 4px;
+  font-size: 12px; color: var(--muted); white-space: nowrap;
+  padding: 2px 8px; border-right: 1px solid var(--border);
+}
+.mapstats__pill:last-of-type { border-right: none; }
+.mapstats__pill strong { font-size: 15px; font-weight: 800; color: var(--text); }
+.mapstats__info {
+  flex: none; width: 30px; height: 30px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: none; background: #f1f5f9; color: var(--muted);
+}
+.mapstats__info--on { background: var(--brand); color: #fff; }
+.mapstats__note {
+  margin: 8px auto 0; max-width: 360px;
+  background: rgba(255,255,255,0.98); border: 1px solid var(--border);
+  border-radius: 12px; box-shadow: var(--shadow);
+  padding: 10px 12px; font-size: 12px; line-height: 1.45; color: var(--text);
+}
+
+/* Boton flotante de reporte */
+.fab-report {
+  position: absolute;
+  bottom: 76px; right: 12px; z-index: 1000;
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--brand); color: #fff; border: none;
+  border-radius: 999px; padding: 14px 18px;
+  font-size: 14px; font-weight: 800; box-shadow: var(--shadow-lg, 0 8px 24px rgba(15,23,42,0.22));
+}
+.fab-report:hover { filter: brightness(1.05); }
+
+/* Tarjeta de bienvenida flotante */
+.intro-card {
+  position: absolute; z-index: 1100;
+  left: 12px; right: 12px; bottom: 16px; margin: 0 auto;
+  max-width: 460px;
+  display: flex; align-items: flex-start; gap: 10px;
+  background: #fff; border: 1px solid var(--border);
+  border-radius: 16px; box-shadow: var(--shadow-lg, 0 12px 32px rgba(15,23,42,0.25));
+  padding: 14px 16px;
+}
+.intro-card__flag { display: inline-flex; flex-direction: column; gap: 2px; flex: none; margin-top: 2px; }
+.intro-card__flag span { width: 18px; height: 4px; border-radius: 1px; }
+.intro-card__flag span:nth-child(1) { background: #fcd116; }
+.intro-card__flag span:nth-child(2) { background: #0033a0; }
+.intro-card__flag span:nth-child(3) { background: #cf142b; }
+.intro-card__body { flex: 1; min-width: 0; }
+.intro-card__title { display: block; font-size: 15px; font-weight: 800; }
+.intro-card__text { margin: 4px 0 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
+.intro-card__close {
+  flex: none; width: 30px; height: 30px; border-radius: 8px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: #f1f5f9; border: none; color: var(--muted);
+}
 
 /* Side panel */
 .panel {
@@ -982,7 +1105,20 @@ a { color: var(--accent); }
 .about__flag span:nth-child(1) { background: var(--ve-yellow); }
 .about__flag span:nth-child(2) { background: var(--ve-blue); }
 .about__flag span:nth-child(3) { background: var(--ve-red); }
-.about__title { margin: 0; font-size: clamp(26px, 5vw, 36px); font-weight: 800; letter-spacing: -0.02em; text-wrap: balance; }
+  .about__badge {
+    display: inline-block; margin-bottom: 12px;
+    background: #fef2f2; color: var(--brand); border: 1px solid #fecaca;
+    border-radius: 999px; padding: 4px 12px; font-size: 12px; font-weight: 800;
+    letter-spacing: 0.01em;
+  }
+  .about__quake {
+    display: flex; align-items: flex-start; gap: 8px;
+    max-width: 760px; margin: 0 0 24px;
+    background: #fffbeb; border: 1px solid #fde68a; color: #854d0e;
+    border-radius: 12px; padding: 12px 14px; font-size: 14px; line-height: 1.5;
+  }
+  .about__quake svg { flex: none; margin-top: 2px; }
+  .about__title { margin: 0; font-size: clamp(26px, 5vw, 36px); font-weight: 800; letter-spacing: -0.02em; text-wrap: balance; }
 .about__subtitle { margin: 12px auto 0; color: var(--muted); font-size: 17px; line-height: 1.5; max-width: 52ch; text-wrap: pretty; }
 .about__body p { font-size: 16px; line-height: 1.65; color: #334155; margin: 0 0 16px; }
 .about__section { margin-top: 30px; }
