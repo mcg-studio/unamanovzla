@@ -70,6 +70,21 @@ const DICT = {
     'wa.soon': 'Integración de WhatsApp próximamente',
 
     'legend.title': 'Nivel de gravedad',
+    'legend.toggle': 'Leyenda',
+    'legend.kindTitle': 'Tipo de punto',
+    'legend.parroquia': 'Parroquia',
+    'legend.hospital': 'Hospital',
+    'legend.otro': 'Otro punto',
+
+    'intro.text': 'Una Mano coordina ayuda durante emergencias en Venezuela. La información es reportada por la comunidad y revisada por administradores.',
+    'intro.dismiss': 'Cerrar',
+
+    'mstat.points': 'puntos',
+    'mstat.verified': 'verificados',
+    'mstat.updates': 'actualizaciones',
+    'mstat.active': 'centros activos',
+    'map.info': 'Aviso sobre la información',
+    'map.report': 'Reportar un punto',
 
     'disclaimer.text': 'Información colaborativa, aportada por la comunidad y revisada por administradores. Puede no estar verificada en tiempo real: confirma con el contacto del lugar antes de movilizar recursos o donaciones.',
     'disclaimer.close': 'Cerrar aviso',
@@ -181,6 +196,21 @@ const DICT = {
     'wa.soon': 'WhatsApp integration coming soon',
 
     'legend.title': 'Severity level',
+    'legend.toggle': 'Legend',
+    'legend.kindTitle': 'Point type',
+    'legend.parroquia': 'Parish',
+    'legend.hospital': 'Hospital',
+    'legend.otro': 'Other point',
+
+    'intro.text': 'Una Mano coordinates aid during emergencies in Venezuela. Information is reported by the community and reviewed by administrators.',
+    'intro.dismiss': 'Close',
+
+    'mstat.points': 'points',
+    'mstat.verified': 'verified',
+    'mstat.updates': 'updates',
+    'mstat.active': 'active centers',
+    'map.info': 'Information notice',
+    'map.report': 'Report a point',
 
     'disclaimer.text': 'Collaborative information, contributed by the community and reviewed by administrators. It may not be verified in real time: confirm with the location contact before mobilizing resources or donations.',
     'disclaimer.close': 'Dismiss notice',
