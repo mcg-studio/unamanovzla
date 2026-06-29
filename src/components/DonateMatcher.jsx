@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { STATUS_LEVELS, KIND_META } from '../data/constants'
+import { STATUS_LEVELS } from '../data/constants'
 import { parseDonationItems, matchDonations } from '../lib/search'
 
 export default function DonateMatcher({ locations = [], onClose, onPickLocation }) {
@@ -12,7 +12,7 @@ export default function DonateMatcher({ locations = [], onClose, onPickLocation 
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal__head">
-          <h2>🎁 Quiero donar</h2>
+          <h2>Quiero donar</h2>
           <button className="panel__close" onClick={onClose}>×</button>
         </div>
         <div className="modal__body">
@@ -47,9 +47,7 @@ export default function DonateMatcher({ locations = [], onClose, onPickLocation 
                 return (
                   <div className="donate__card" key={l.id}>
                     <div className="donate__cardhead">
-                      <span className="donate__name">
-                        {(KIND_META[l.kind] || KIND_META.otro).icon} {l.name}
-                      </span>
+                      <span className="donate__name">{l.name}</span>
                       <span className="status-pill" style={{ background: level.color, marginTop: 0, fontSize: 11 }}>
                         {level.label}
                       </span>
@@ -67,7 +65,7 @@ export default function DonateMatcher({ locations = [], onClose, onPickLocation 
                     )}
                     {l.blood_needed && (
                       <div className="alert-blood" style={{ margin: '6px 0' }}>
-                        🩸 Sangre{l.blood_types ? `: ${l.blood_types}` : ''}
+                        Sangre{l.blood_types ? `: ${l.blood_types}` : ''}
                       </div>
                     )}
                     <div className="poc-box" style={{ margin: '6px 0' }}>

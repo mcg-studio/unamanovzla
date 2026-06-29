@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { repo } from '../lib/repository'
 import { STATUS_LEVELS, STATUS_ORDER, KIND_META } from '../data/constants'
 import SubmissionForm from './SubmissionForm'
+import Icon from './Icons'
 
 function Field({ label, icon, value }) {
   const empty = !value || (typeof value === 'string' && !value.trim())
@@ -121,26 +122,26 @@ export default function LocationPanel({ location, isAdmin, onClose, onUpdated })
               </div>
             )}
 
-            <Field label="Situacion" icon="📋" value={location.summary} />
+            <Field label="Situacion" icon={<Icon name="clipboard" size={14} />} value={location.summary} />
 
             {isHospital && (
               <>
-                <Field label="Personas atendidas por el desastre" icon="🧑‍⚕️" value={location.people_aided} />
+                <Field label="Personas atendidas por el desastre" icon={<Icon name="medical" size={14} />} value={location.people_aided} />
                 {location.blood_needed && (
                   <div className="alert-blood">
-                    🩸 Se necesitan donaciones de sangre{location.blood_types ? `: ${location.blood_types}` : ''}
+                    <Icon name="blood" size={15} /> Se necesitan donaciones de sangre{location.blood_types ? `: ${location.blood_types}` : ''}
                   </div>
                 )}
               </>
             )}
             {isParroquia && (
               <>
-                <Field label="Equipos de rescate / quien ayuda" icon="🚒" value={location.rescue_teams} />
-                <Field label="Edificaciones en busqueda de personas" icon="🏚️" value={location.buildings_searched} />
+                <Field label="Equipos de rescate / quien ayuda" icon={<Icon name="rescue" size={14} />} value={location.rescue_teams} />
+                <Field label="Edificaciones en busqueda de personas" icon={<Icon name="building" size={14} />} value={location.buildings_searched} />
               </>
             )}
 
-            <Field label="Suministros necesarios" icon="📦" value={location.supplies_needed} />
+            <Field label="Suministros necesarios" icon={<Icon name="box" size={14} />} value={location.supplies_needed} />
 
             <div className="section-title">¿Donde enviar donaciones?</div>
             <div className="poc-box">
@@ -150,11 +151,11 @@ export default function LocationPanel({ location, isAdmin, onClose, onUpdated })
             </div>
 
             <button className="btn btn--primary btn--block" style={{ marginTop: 16 }} onClick={() => setMode('submit')}>
-              ✍️ Enviar una actualizacion
+              <Icon name="edit" size={15} /> Enviar una actualizacion
             </button>
             {isAdmin && (
               <button className="btn btn--ghost btn--block" style={{ marginTop: 8 }} onClick={() => setMode('edit')}>
-                🛠️ Editar y publicar (admin)
+                <Icon name="tool" size={15} /> Editar y publicar (admin)
               </button>
             )}
           </>

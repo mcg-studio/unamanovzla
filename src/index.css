@@ -83,11 +83,10 @@ a { color: var(--accent); }
 .map-wrap { position: relative; flex: 1; min-height: 320px; }
 .map { position: absolute; inset: 0; }
 
-/* Overlays de pagina (Puntos de ayuda, Acerca de) */
+/* Paginas de ancho completo (Puntos de ayuda, Acerca de) */
 .page {
-  position: absolute;
-  inset: 0;
-  z-index: 600;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
   background: #f1f5f9;
   -webkit-overflow-scrolling: touch;

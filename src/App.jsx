@@ -40,6 +40,9 @@ export default function App() {
 
   const placing = view === 'report' && !placedPoint
   const showNewForm = view === 'report'
+  // El mapa permanece montado (conserva el estado de Leaflet) salvo en las
+  // vistas de pagina completa, que se renderizan en su lugar.
+  const showMap = view !== 'directory' && view !== 'about'
 
   async function loadLocations() {
     const data = await repo.getLocations()
@@ -141,7 +144,7 @@ export default function App() {
           />
         )}
 
-        <div className="map-wrap">
+        <div className="map-wrap" style={{ display: showMap ? 'block' : 'none' }}>
           <MapView
             locations={filtered}
             version={version}

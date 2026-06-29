@@ -122,10 +122,69 @@ const PATHS = {
       <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
     </>
   ),
+  clipboard: (
+    <>
+      <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+      <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+    </>
+  ),
+  medical: (
+    <>
+      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+    </>
+  ),
+  rescue: (
+    <>
+      <path d="M3 11l1-5a1 1 0 0 1 1-.8h14a1 1 0 0 1 1 .8l1 5" />
+      <path d="M2 11h20v6a1 1 0 0 1-1 1h-1" />
+      <path d="M6 18H4" />
+      <circle cx="7" cy="18" r="2" />
+      <circle cx="17" cy="18" r="2" />
+      <path d="M9 18h6" />
+    </>
+  ),
+  building: (
+    <>
+      <path d="M3 21h18" />
+      <path d="M5 21V5a1 1 0 0 1 1-1h7a1 1 0 0 1 1 1v16" />
+      <path d="M14 9h4a1 1 0 0 1 1 1v11" />
+      <line x1="8" y1="8" x2="8" y2="8.01" />
+      <line x1="11" y1="8" x2="11" y2="8.01" />
+      <line x1="8" y1="12" x2="8" y2="12.01" />
+      <line x1="11" y1="12" x2="11" y2="12.01" />
+    </>
+  ),
+  edit: (
+    <>
+      <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+      <path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4z" />
+    </>
+  ),
+  tool: (
+    <path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.3 2.3-2-2z" />
+  ),
+  blood: (
+    <path d="M12 2s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z" />
+  ),
+  gift: (
+    <>
+      <polyline points="20 12 20 22 4 22 4 12" />
+      <rect x="2" y="7" width="20" height="5" />
+      <line x1="12" y1="22" x2="12" y2="7" />
+      <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z" />
+      <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z" />
+    </>
+  ),
+  user: (
+    <>
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+      <circle cx="12" cy="7" r="4" />
+    </>
+  ),
 }
 
 export default function Icon({ name, size = 18, strokeWidth = 2, className, ...rest }) {
-  const fillIcons = ['heart', 'shield', 'whatsapp']
+  const fillIcons = ['heart', 'shield', 'whatsapp', 'blood']
   const isFill = fillIcons.includes(name)
   return (
     <svg

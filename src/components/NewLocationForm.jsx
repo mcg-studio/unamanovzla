@@ -72,7 +72,7 @@ export default function NewLocationForm({ placedPoint, onRemark, onClose, onSent
         </div>
         <div className="panel__body">
           <div className="notice notice--ok">
-            ✅ ¡Gracias! Tu nuevo punto fue enviado y un administrador lo revisara antes de publicarlo en el mapa.
+¡Gracias! Tu nuevo punto fue enviado y un administrador lo revisara antes de publicarlo en el mapa.
           </div>
           <button className="btn btn--ghost btn--block" onClick={onClose}>Cerrar</button>
         </div>
@@ -97,8 +97,8 @@ export default function NewLocationForm({ placedPoint, onRemark, onClose, onSent
           </div>
           <div className={'notice' + (placedPoint ? ' notice--ok' : '')} style={!placedPoint ? { background: '#eff6ff', color: '#1e40af', border: '1px solid #bfdbfe' } : undefined}>
             {placedPoint
-              ? <>📍 Ubicacion marcada: {placedPoint.lat.toFixed(4)}, {placedPoint.lng.toFixed(4)}. <button type="button" className="linkbtn" onClick={onRemark}>Volver a marcar</button></>
-              : <>👉 Haz clic en el mapa para marcar donde esta el lugar.</>}
+              ? <>Ubicacion marcada: {placedPoint.lat.toFixed(4)}, {placedPoint.lng.toFixed(4)}. <button type="button" className="linkbtn" onClick={onRemark}>Volver a marcar</button></>
+              : <>Haz clic en el mapa para marcar donde esta el lugar.</>}
           </div>
 
           <label>Tipo de punto</label>

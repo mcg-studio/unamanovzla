@@ -71,7 +71,7 @@ export default function SubmissionForm({ location, onClose, onSent }) {
     return (
       <div className="form">
         <div className="notice notice--ok">
-          ✅ ¡Gracias! Tu reporte fue enviado y sera revisado por un administrador antes de publicarse.
+¡Gracias! Tu reporte fue enviado y sera revisado por un administrador antes de publicarse.
         </div>
         <button className="btn btn--ghost btn--block" onClick={onClose}>Cerrar</button>
       </div>
