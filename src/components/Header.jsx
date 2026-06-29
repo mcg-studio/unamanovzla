@@ -36,6 +36,15 @@ export default function Header({
   return (
     <header className="nav">
       <div className="nav__inner">
+        <button
+          className="nav__hamburger"
+          onClick={() => setMenuOpen((v) => !v)}
+          aria-label={menuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
+          aria-expanded={menuOpen}
+        >
+          <Icon name={menuOpen ? 'close' : 'menu'} size={22} />
+        </button>
+
         <button className="nav__brand" onClick={() => go('map')} aria-label={t('nav.home')}>
           <span className="nav__logo">
             <span className="nav__logo-bar nav__logo-bar--y" />
@@ -96,15 +105,6 @@ export default function Header({
               <Icon name="shield" size={15} /> {t('nav.admin')}
             </button>
           )}
-
-          <button
-            className="nav__hamburger"
-            onClick={() => setMenuOpen((v) => !v)}
-            aria-label={menuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
-            aria-expanded={menuOpen}
-          >
-            <Icon name={menuOpen ? 'close' : 'menu'} size={22} />
-          </button>
         </div>
       </div>
 
