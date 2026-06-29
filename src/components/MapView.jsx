@@ -1,8 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
 import { MapContainer, TileLayer, GeoJSON, CircleMarker, Tooltip, Pane, ZoomControl, useMap, useMapEvents } from 'react-leaflet'
-import { statusColor, categoryColor } from '../lib/labels'
+import { STATUS_LEVELS, KIND_META } from '../data/constants'
 
 const REGION_CENTER = [10.49, -66.85]
+
+function levelColor(level) {
+  return (STATUS_LEVELS[level] || STATUS_LEVELS.sin_datos).color
+}
+function kindColor(kind) {
+  return (KIND_META[kind] || KIND_META.otro).color
+}
 
 // Centra el mapa cuando el usuario elige un lugar desde el buscador.
 function FlyTo({ focus }) {
@@ -47,7 +54,9 @@ export default function MapView({ locations, version, focus, placing, placedPoin
     return s
   }, [geo])
 
-  // Solo mostramos los poligonos de parroquias que estan en el conjunto filtrado.
+  // Solo mostramos los poligonos de parroquias que estan en el conjunto filtrado
+  // (asi al filtrar por estado o por "Hospitales" los demas poligonos desaparecen
+  // y no interceptan los clics).
   const geoFiltered = useMemo(() => {
     if (!geo) return null
     const features = geo.features.filter((f) => byId[f?.properties?.id])
@@ -59,14 +68,15 @@ export default function MapView({ locations, version, focus, placing, placedPoin
     [version, geoFiltered],
   )
 
-  // Parroquias solo como marcador si no tienen poligono.
+  // Puntos: hospitales y otros puntos siempre como marcador; parroquias solo si
+  // no tienen poligono.
   const markers = useMemo(
     () =>
       locations.filter(
         (l) =>
           Number.isFinite(l.lat) &&
           Number.isFinite(l.lng) &&
-          (l.category !== 'parroquia' || !polygonIds.has(l.id)),
+          (l.kind !== 'parroquia' || !polygonIds.has(l.id)),
       ),
     [locations, polygonIds],
   )
@@ -76,8 +86,8 @@ export default function MapView({ locations, version, focus, placing, placedPoin
     return {
       color: '#1e3a8a',
       weight: 1,
-      fillColor: statusColor(loc?.status_level),
-      fillOpacity: 0.5,
+      fillColor: levelColor(loc?.status_level),
+      fillOpacity: 0.55,
     }
   }
 
@@ -87,8 +97,8 @@ export default function MapView({ locations, version, focus, placing, placedPoin
     layer.bindTooltip(name, { sticky: true })
     layer.on({
       click: () => loc && onSelect(loc),
-      mouseover: () => layer.setStyle({ weight: 2.5, fillOpacity: 0.72 }),
-      mouseout: () => layer.setStyle({ weight: 1, fillOpacity: 0.5 }),
+      mouseover: () => layer.setStyle({ weight: 2.5, fillOpacity: 0.75 }),
+      mouseout: () => layer.setStyle({ weight: 1, fillOpacity: 0.55 }),
     })
   }
 
@@ -104,27 +114,34 @@ export default function MapView({ locations, version, focus, placing, placedPoin
       {geoFiltered && geoFiltered.features.length > 0 && (
         <GeoJSON key={geoKey} data={geoFiltered} style={styleFor} onEachFeature={onEach} />
       )}
+      {/* Los puntos van en un pane superior para que siempre sean clicables
+          por encima de los poligonos de parroquias. */}
       <Pane name="puntos" style={{ zIndex: 640 }}>
         {markers.map((l) => (
           <CircleMarker
             key={l.id}
             center={[l.lat, l.lng]}
-            radius={l.category === 'parroquia' ? 6 : 8}
+            radius={l.kind === 'parroquia' ? 6 : 8}
             pane="puntos"
             bubblingMouseEvents={false}
             pathOptions={{
-              color: categoryColor(l.category),
+              color: kindColor(l.kind),
               weight: 2,
-              fillColor: statusColor(l.status_level),
+              fillColor: levelColor(l.status_level),
               fillOpacity: 0.9,
             }}
             eventHandlers={{
               click: () => onSelect(l),
               mouseover: (e) => {
-                e.target.setStyle({ weight: 3.5 })
+                e.target.setStyle({ fillColor: '#dc2626', color: '#991b1b', weight: 3 })
                 e.target.bringToFront()
               },
-              mouseout: (e) => e.target.setStyle({ weight: 2 }),
+              mouseout: (e) =>
+                e.target.setStyle({
+                  fillColor: levelColor(l.status_level),
+                  color: kindColor(l.kind),
+                  weight: 2,
+                }),
             }}
           >
             <Tooltip pane="tooltipPane" direction="top" offset={[0, -6]} sticky>
@@ -132,6 +149,7 @@ export default function MapView({ locations, version, focus, placing, placedPoin
             </Tooltip>
           </CircleMarker>
         ))}
+        {/* Marcador temporal del nuevo punto que se esta ubicando. */}
         {placedPoint && (
           <CircleMarker
             center={[placedPoint.lat, placedPoint.lng]}

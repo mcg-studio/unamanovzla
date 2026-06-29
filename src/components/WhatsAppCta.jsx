@@ -1,54 +1,50 @@
-import { useI18n } from '../lib/i18n'
+import { useState } from 'react'
 import Icon from './Icons'
 
-// Punto de entrada para futura integración de WhatsApp. El número se puede
-// configurar luego mediante VITE_WHATSAPP_NUMBER; por ahora es un placeholder.
-const WHATSAPP_NUMBER = import.meta.env.VITE_WHATSAPP_NUMBER || ''
+// Punto de entrada para la futura integración con WhatsApp.
+// Por ahora muestra una sección placeholder; cuando exista el número/bot real,
+// basta con reemplazar WHATSAPP_LINK por el enlace wa.me correspondiente.
+const WHATSAPP_LINK = null
 
-export default function WhatsAppCta({ compact = false }) {
-  const { t } = useI18n()
-  const enabled = Boolean(WHATSAPP_NUMBER)
-  const href = enabled
-    ? `https://wa.me/${WHATSAPP_NUMBER.replace(/[^0-9]/g, '')}`
-    : undefined
+export default function WhatsAppCta({ onReport, compact = false }) {
+  const [showInfo, setShowInfo] = useState(false)
 
-  if (compact) {
-    return enabled ? (
-      <a className="btn btn--success" href={href} target="_blank" rel="noopener noreferrer">
-        <Icon name="whatsapp" />
-        {t('whatsapp.cta')}
-      </a>
-    ) : (
-      <button className="btn btn--success" type="button" title={t('whatsapp.soon')}>
-        <Icon name="whatsapp" />
-        {t('whatsapp.cta')}
-      </button>
-    )
+  function handleClick() {
+    if (WHATSAPP_LINK) {
+      window.open(WHATSAPP_LINK, '_blank', 'noopener')
+    } else {
+      setShowInfo((v) => !v)
+    }
   }
 
   return (
-    <div className="card card--pad whatsapp-card">
-      <div className="whatsapp-card__icon">
-        <Icon name="whatsapp" />
+    <section className={'whatsapp' + (compact ? ' whatsapp--compact' : '')}>
+      <div className="whatsapp__icon" aria-hidden>
+        <Icon name="whatsapp" size={compact ? 22 : 28} />
       </div>
-      <div className="whatsapp-card__text">
-        <h3>{t('whatsapp.title')}</h3>
-        <p>{t('whatsapp.desc')}</p>
-        {enabled ? (
-          <a className="btn btn--success" href={href} target="_blank" rel="noopener noreferrer">
-            <Icon name="whatsapp" />
-            {t('whatsapp.cta')}
-          </a>
-        ) : (
-          <div className="row row--wrap" style={{ marginTop: 4 }}>
-            <button className="btn btn--success" type="button">
-              <Icon name="whatsapp" />
-              {t('whatsapp.cta')}
+      <div className="whatsapp__content">
+        <h3 className="whatsapp__title">Reportar por WhatsApp</h3>
+        <p className="whatsapp__desc">
+          ¿Tienes información sobre una necesidad, hospital, refugio o centro de acopio? Envíanos un
+          mensaje por WhatsApp para que nuestro equipo pueda revisarlo y agregarlo al mapa.
+        </p>
+        <div className="whatsapp__actions">
+          <button className="whatsapp__btn" onClick={handleClick}>
+            <Icon name="whatsapp" size={18} /> Reportar por WhatsApp
+          </button>
+          {onReport && (
+            <button className="whatsapp__alt" onClick={onReport}>
+              o reporta desde la app
             </button>
-            <span className="badge badge--soft">{t('whatsapp.soon')}</span>
-          </div>
+          )}
+        </div>
+        {showInfo && (
+          <p className="whatsapp__note">
+            <Icon name="clock" size={14} /> Integración con WhatsApp disponible próximamente.
+            Mientras tanto, puedes reportar directamente desde la aplicación.
+          </p>
         )}
       </div>
-    </div>
+    </section>
   )
 }

@@ -1,71 +1,79 @@
-import { useI18n } from '../lib/i18n'
-import { CATEGORY_ICON, categoryColor } from '../lib/labels'
 import Icon from './Icons'
 import WhatsAppCta from './WhatsAppCta'
 
-const TYPE_KEYS = ['hospital', 'centro_acopio', 'refugio', 'organizacion', 'rescate', 'punto_medico', 'otro']
+const HOW_STEPS = [
+  'Organizaciones y ciudadanos reportan información.',
+  'Los administradores verifican los datos.',
+  'Los puntos aprobados aparecen en el mapa.',
+  'Los centros de ayuda pueden actualizar sus necesidades y recursos disponibles.',
+  'Donantes y voluntarios pueden identificar dónde apoyar.',
+]
 
-export default function AboutPage({ onNavigate, onReport }) {
-  const { t } = useI18n()
-  const steps = ['about.how1', 'about.how2', 'about.how3', 'about.how4', 'about.how5']
+const POINT_TYPES = [
+  { icon: 'hospital', label: 'Hospitales' },
+  { icon: 'box', label: 'Centros de acopio' },
+  { icon: 'home', label: 'Refugios' },
+  { icon: 'users', label: 'Organizaciones comunitarias' },
+  { icon: 'shield', label: 'Equipos de rescate' },
+  { icon: 'plus', label: 'Centros médicos' },
+  { icon: 'pin', label: 'Otros puntos de apoyo' },
+]
 
+export default function AboutPage({ onReport }) {
   return (
-    <div className="page page--narrow">
-      <div className="about-hero">
-        <span className="about-hero__flag" aria-hidden="true">
-          <span style={{ background: '#fcd116' }} />
-          <span style={{ background: '#0a3d91' }} />
-          <span style={{ background: '#cf142b' }} />
-        </span>
-        <h1>{t('about.title')}</h1>
-        <p className="about-hero__sub">{t('about.subtitle')}</p>
-      </div>
+    <div className="page page--about">
+      <div className="about">
+        <header className="about__hero">
+          <span className="about__flag" aria-hidden>
+            <span /><span /><span />
+          </span>
+          <h1 className="about__title">¿Qué es Mapa de Ayuda?</h1>
+          <p className="about__subtitle">
+            Una plataforma colaborativa para coordinar ayuda durante emergencias en Venezuela.
+          </p>
+        </header>
 
-      <div className="stack" style={{ marginTop: 28 }}>
-        <p>{t('about.body1')}</p>
-        <p>{t('about.body2')}</p>
-        <p>{t('about.body3')}</p>
-      </div>
+        <section className="about__body">
+          <p>
+            Mapa de Ayuda conecta comunidades, hospitales, centros de acopio, refugios, voluntarios y
+            organizaciones para facilitar la coordinación de recursos durante situaciones de emergencia.
+          </p>
+          <p>
+            La plataforma permite visualizar necesidades en tiempo real, registrar puntos de ayuda,
+            compartir actualizaciones y conectar donaciones con los lugares donde más se necesitan.
+          </p>
+          <p>
+            La información es colaborativa y es revisada por administradores antes de ser publicada.
+            Nuestro objetivo es ayudar a que recursos, información y apoyo lleguen más rápido a las
+            personas y comunidades afectadas.
+          </p>
+        </section>
 
-      <hr className="divider" />
+        <section className="about__section">
+          <h2 className="about__h2">¿Cómo funciona?</h2>
+          <ol className="about__steps">
+            {HOW_STEPS.map((step, i) => (
+              <li key={i} className="about__step">
+                <span className="about__step-num">{i + 1}</span>
+                <span>{step}</span>
+              </li>
+            ))}
+          </ol>
+        </section>
 
-      <h2 style={{ fontSize: '1.3rem', fontWeight: 800, marginBottom: 18 }}>{t('about.how')}</h2>
-      <ol className="how-list">
-        {steps.map((s, i) => (
-          <li key={s}>
-            <span className="how-list__num">{i + 1}</span>
-            <span>{t(s)}</span>
-          </li>
-        ))}
-      </ol>
-
-      <hr className="divider" />
-
-      <h2 style={{ fontSize: '1.3rem', fontWeight: 800, marginBottom: 18 }}>{t('about.types')}</h2>
-      <div className="types-grid">
-        {TYPE_KEYS.map((key) => (
-          <div className="type-item" key={key}>
-            <span className="type-item__icon" style={{ background: categoryColor(key) }}>
-              <Icon name={CATEGORY_ICON[key] || 'pin'} />
-            </span>
-            <span>{t('category.' + key)}</span>
+        <section className="about__section">
+          <h2 className="about__h2">Tipos de puntos</h2>
+          <div className="about__types">
+            {POINT_TYPES.map((t) => (
+              <div key={t.label} className="about__type">
+                <span className="about__type-icon"><Icon name={t.icon} size={20} /></span>
+                <span>{t.label}</span>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </section>
 
-      <hr className="divider" />
-
-      <WhatsAppCta />
-
-      <div className="row row--wrap" style={{ marginTop: 22, justifyContent: 'center' }}>
-        <button className="btn btn--primary btn--lg" onClick={() => onNavigate('map')}>
-          <Icon name="map" />
-          {t('home.explore')}
-        </button>
-        <button className="btn btn--ghost btn--lg" onClick={onReport}>
-          <Icon name="plus" />
-          {t('nav.report')}
-        </button>
+        <WhatsAppCta onReport={onReport} />
       </div>
     </div>
   )

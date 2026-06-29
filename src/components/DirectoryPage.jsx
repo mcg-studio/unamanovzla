@@ -1,91 +1,104 @@
 import { useMemo, useState } from 'react'
-import { useI18n } from '../lib/i18n'
-import { CATEGORIES } from '../data/constants'
-import { categoryColor } from '../lib/labels'
-import { matchLocation, normalize } from '../lib/search'
-import LocationCard from './LocationCard'
+import { KIND_META, STATUS_LEVELS, STATES } from '../data/constants'
+import { normalize, matchLocation } from '../lib/search'
 import Icon from './Icons'
 
-const STATUS_RANK = { critico: 0, alto: 1, medio: 2, estable: 3, sin_datos: 4 }
+const KIND_ICON = { hospital: 'hospital', parroquia: 'pin', otro: 'box' }
 
-export default function DirectoryPage({ locations, onOpen }) {
-  const { t, lang } = useI18n()
+export default function DirectoryPage({ locations = [], onPick }) {
   const [query, setQuery] = useState('')
-  const [cat, setCat] = useState('all')
-  const [sort, setSort] = useState('recent')
-
-  const presentCategories = useMemo(() => {
-    const set = new Set(locations.map((l) => l.category))
-    return CATEGORIES.filter((c) => set.has(c.key))
-  }, [locations])
+  const [filterState, setFilterState] = useState('all')
+  const [filterKind, setFilterKind] = useState('all')
 
   const filtered = useMemo(() => {
     const nq = normalize(query)
-    let rows = locations.filter((l) => (cat === 'all' || l.category === cat) && matchLocation(l, nq))
-    rows = [...rows]
-    if (sort === 'recent') rows.sort((a, b) => new Date(b.updated_at || 0) - new Date(a.updated_at || 0))
-    else if (sort === 'urgency') rows.sort((a, b) => (STATUS_RANK[a.status_level] ?? 9) - (STATUS_RANK[b.status_level] ?? 9))
-    else rows.sort((a, b) => a.name.localeCompare(b.name, lang === 'en' ? 'en' : 'es'))
-    return rows
-  }, [locations, query, cat, sort, lang])
+    return locations
+      .filter(
+        (l) =>
+          (filterState === 'all' || l.state === filterState) &&
+          (filterKind === 'all' || l.kind === filterKind) &&
+          matchLocation(l, nq),
+      )
+      .sort((a, b) => {
+        // Primero los que tienen información publicada.
+        const au = a.updated_at ? 1 : 0
+        const bu = b.updated_at ? 1 : 0
+        if (au !== bu) return bu - au
+        return (a.name || '').localeCompare(b.name || '')
+      })
+  }, [locations, query, filterState, filterKind])
 
   return (
-    <div className="page page--wide">
-      <div className="page-head">
-        <h1>{t('directory.title')}</h1>
-        <p>{t('directory.subtitle')}</p>
-      </div>
+    <div className="page page--directory">
+      <div className="directory">
+        <header className="directory__head">
+          <h1 className="page__title">Puntos de ayuda</h1>
+          <p className="page__lead">
+            Hospitales, refugios, centros de acopio y otros puntos registrados en la zona afectada.
+          </p>
+        </header>
 
-      <div className="stack" style={{ marginBottom: 22 }}>
-        <div className="search-box" style={{ maxWidth: 460 }}>
-          <div className="search-input-wrap">
-            <Icon name="search" className="search-icon" />
+        <div className="directory__controls">
+          <div className="directory__search">
+            <Icon name="search" size={16} />
             <input
-              className="input input--icon"
               type="search"
               value={query}
-              placeholder={t('directory.searchPlaceholder')}
               onChange={(e) => setQuery(e.target.value)}
+              placeholder="Buscar por nombre, zona o necesidad…"
+              aria-label="Buscar puntos de ayuda"
             />
           </div>
-        </div>
-
-        <div className="spread row--wrap">
-          <div className="chip-row">
-            <button className={'chip' + (cat === 'all' ? ' chip--active' : '')} onClick={() => setCat('all')}>
-              {t('common.allCategories')}
-            </button>
-            {presentCategories.map((c) => (
-              <button key={c.key} className={'chip' + (cat === c.key ? ' chip--active' : '')} onClick={() => setCat(c.key)}>
-                <span className="chip__dot" style={{ background: categoryColor(c.key) }} />
-                {t('category.' + c.key)}
-              </button>
-            ))}
+          <div className="directory__filters">
+            <select value={filterState} onChange={(e) => setFilterState(e.target.value)} aria-label="Filtrar por estado">
+              <option value="all">Todos los estados</option>
+              {STATES.map((s) => (
+                <option key={s} value={s}>{s}</option>
+              ))}
+            </select>
+            <select value={filterKind} onChange={(e) => setFilterKind(e.target.value)} aria-label="Filtrar por tipo">
+              <option value="all">Todos los tipos</option>
+              <option value="hospital">Hospitales</option>
+              <option value="parroquia">Parroquias</option>
+              <option value="otro">Otros puntos</option>
+            </select>
           </div>
-          <select className="select" style={{ width: 'auto' }} value={sort} onChange={(e) => setSort(e.target.value)}>
-            <option value="recent">{t('directory.sortRecent')}</option>
-            <option value="urgency">{t('directory.sortUrgency')}</option>
-            <option value="name">{t('directory.sortName')}</option>
-          </select>
         </div>
-      </div>
 
-      <div className="muted" style={{ marginBottom: 12, fontSize: '0.85rem' }}>
-        {filtered.length} {t('common.results')}
-      </div>
+        <p className="directory__count">{filtered.length} puntos</p>
 
-      {filtered.length === 0 ? (
-        <div className="empty-state">
-          <Icon name="search" />
-          <p>{t('common.noResults')}</p>
-        </div>
-      ) : (
-        <div className="grid">
-          {filtered.map((l) => (
-            <LocationCard key={l.id} location={l} onOpen={onOpen} />
-          ))}
-        </div>
-      )}
+        <ul className="directory__list">
+          {filtered.map((l) => {
+            const meta = KIND_META[l.kind] || KIND_META.otro
+            const status = STATUS_LEVELS[l.status_level] || STATUS_LEVELS.sin_datos
+            return (
+              <li key={l.id}>
+                <button className="dir-card" onClick={() => onPick(l)}>
+                  <span className="dir-card__icon" style={{ background: meta.color }}>
+                    <Icon name={KIND_ICON[l.kind] || 'box'} size={18} />
+                  </span>
+                  <span className="dir-card__body">
+                    <span className="dir-card__name">{l.name}</span>
+                    <span className="dir-card__meta">
+                      {meta.label}
+                      {l.municipio ? ` · ${l.municipio}` : ''}
+                      {l.state ? ` · ${l.state}` : ''}
+                    </span>
+                    {l.summary && <span className="dir-card__summary">{l.summary}</span>}
+                  </span>
+                  <span className="dir-card__status">
+                    <span className="status-dot" style={{ background: status.color }} />
+                    {status.label}
+                  </span>
+                </button>
+              </li>
+            )
+          })}
+          {filtered.length === 0 && (
+            <li className="directory__empty">No se encontraron puntos con esos filtros.</li>
+          )}
+        </ul>
+      </div>
     </div>
   )
 }

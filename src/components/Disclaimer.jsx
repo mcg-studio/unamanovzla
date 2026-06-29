@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Icon from './Icons'
 
 const KEY = 'mapa_ayuda_disclaimer_dismissed_v1'
 
@@ -13,7 +14,7 @@ export default function Disclaimer() {
   }
   return (
     <div className="disclaimer" role="note">
-      <span className="disclaimer__icon" aria-hidden>⚠️</span>
+      <span className="disclaimer__icon" aria-hidden><Icon name="alert" size={16} /></span>
       <span className="disclaimer__text">
         Información <strong>colaborativa</strong>, aportada por la comunidad y revisada por
         administradores. Puede no estar verificada en tiempo real: <strong>confirma con el contacto del lugar</strong> antes

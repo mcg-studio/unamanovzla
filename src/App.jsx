@@ -12,6 +12,9 @@ import DonateMatcher from './components/DonateMatcher'
 import UpdatesFeed from './components/UpdatesFeed'
 import Disclaimer from './components/Disclaimer'
 import ResetPassword from './components/ResetPassword'
+import HomeHero from './components/HomeHero'
+import DirectoryPage from './components/DirectoryPage'
+import AboutPage from './components/AboutPage'
 import { repo } from './lib/repository'
 import { STATES } from './data/constants'
 import { matchLocation, normalize } from './lib/search'
@@ -29,12 +32,14 @@ export default function App() {
   const [filterKind, setFilterKind] = useState('all')
   const [query, setQuery] = useState('')
   const [focus, setFocus] = useState(null)
-  const [showNewForm, setShowNewForm] = useState(false)
-  const [placing, setPlacing] = useState(false)
   const [placedPoint, setPlacedPoint] = useState(null)
-  const [showDonate, setShowDonate] = useState(false)
-  const [showFeed, setShowFeed] = useState(false)
   const [showReset, setShowReset] = useState(false)
+
+  // Vista activa: map | directory | donate | updates | report | about
+  const [view, setView] = useState('map')
+
+  const placing = view === 'report' && !placedPoint
+  const showNewForm = view === 'report'
 
   async function loadLocations() {
     const data = await repo.getLocations()
@@ -46,7 +51,6 @@ export default function App() {
   useEffect(() => {
     loadLocations()
     repo.getSession().then(setSession).catch(() => {})
-    // Detecta el regreso desde el correo de recuperacion de clave.
     const unsub = repo.onAuthEvent((event) => {
       if (event === 'PASSWORD_RECOVERY') setShowReset(true)
     })
@@ -70,20 +74,26 @@ export default function App() {
     }
   }
 
-  function openNewForm() {
-    setSelectedId(null)
-    setPlacedPoint(null)
-    setPlacing(true)
-    setShowNewForm(true)
+  function navigate(next) {
+    if (next === 'report') {
+      setSelectedId(null)
+      setPlacedPoint(null)
+    }
+    setView(next)
   }
-  function closeNewForm() {
-    setShowNewForm(false)
-    setPlacing(false)
+
+  function pickFromDirectory(l) {
+    setView('map')
+    handlePickLocation(l)
+  }
+
+  function closeReport() {
     setPlacedPoint(null)
+    setView('map')
   }
   function handleMapClick(pt) {
+    if (view !== 'report') return
     setPlacedPoint(pt)
-    setPlacing(false)
   }
 
   const selected = useMemo(
@@ -109,96 +119,115 @@ export default function App() {
   return (
     <div className="app">
       <Header
+        view={view}
+        onNavigate={navigate}
         session={session}
         onAdminClick={handleAdminClick}
         onSignOut={handleSignOut}
         onManageAdmins={() => setShowAdmins(true)}
-        onNewPoint={openNewForm}
-        onDonate={() => setShowDonate(true)}
-        onToggleFeed={() => setShowFeed((v) => !v)}
-        feedOpen={showFeed}
       />
 
       <Disclaimer />
 
       <div className="main">
-        <MapView
-          locations={filtered}
-          version={version}
-          focus={focus}
-          placing={placing}
-          placedPoint={placedPoint}
-          onMapClick={handleMapClick}
-          onSelect={(l) => setSelectedId(l.id)}
-        />
+        {view === 'map' && (
+          <HomeHero
+            locations={locations}
+            onExplore={() => {
+              const el = document.querySelector('.map-wrap')
+              if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+            }}
+            onReport={() => navigate('report')}
+          />
+        )}
 
-        <div className="toolbar">
-          <SearchBox value={query} onChange={setQuery} locations={locations} onPickLocation={handlePickLocation} />
-          <div className="filters">
-            <button className={'chip' + (filterState === 'all' ? ' chip--active' : '')} onClick={() => setFilterState('all')}>
-              Todos los estados
-            </button>
-            {STATES.map((s) => (
-              <button key={s} className={'chip' + (filterState === s ? ' chip--active' : '')} onClick={() => setFilterState(s)}>
-                {s}
+        <div className="map-wrap">
+          <MapView
+            locations={filtered}
+            version={version}
+            focus={focus}
+            placing={placing}
+            placedPoint={placedPoint}
+            onMapClick={handleMapClick}
+            onSelect={(l) => setSelectedId(l.id)}
+          />
+
+          <div className="toolbar">
+            <SearchBox value={query} onChange={setQuery} locations={locations} onPickLocation={handlePickLocation} />
+            <div className="filters">
+              <button className={'chip' + (filterState === 'all' ? ' chip--active' : '')} onClick={() => setFilterState('all')}>
+                Todos los estados
               </button>
-            ))}
-            <span style={{ width: 8 }} />
-            <button className={'chip' + (filterKind === 'all' ? ' chip--active' : '')} onClick={() => setFilterKind('all')}>
-              Todo
-            </button>
-            <button className={'chip' + (filterKind === 'parroquia' ? ' chip--active' : '')} onClick={() => setFilterKind('parroquia')}>
-              Parroquias
-            </button>
-            <button className={'chip' + (filterKind === 'hospital' ? ' chip--active' : '')} onClick={() => setFilterKind('hospital')}>
-              Hospitales
-            </button>
-            <button className={'chip' + (filterKind === 'otro' ? ' chip--active' : '')} onClick={() => setFilterKind('otro')}>
-              Otros puntos
-            </button>
+              {STATES.map((s) => (
+                <button key={s} className={'chip' + (filterState === s ? ' chip--active' : '')} onClick={() => setFilterState(s)}>
+                  {s}
+                </button>
+              ))}
+              <span style={{ width: 8 }} />
+              <button className={'chip' + (filterKind === 'all' ? ' chip--active' : '')} onClick={() => setFilterKind('all')}>
+                Todo
+              </button>
+              <button className={'chip' + (filterKind === 'parroquia' ? ' chip--active' : '')} onClick={() => setFilterKind('parroquia')}>
+                Parroquias
+              </button>
+              <button className={'chip' + (filterKind === 'hospital' ? ' chip--active' : '')} onClick={() => setFilterKind('hospital')}>
+                Hospitales
+              </button>
+              <button className={'chip' + (filterKind === 'otro' ? ' chip--active' : '')} onClick={() => setFilterKind('otro')}>
+                Otros puntos
+              </button>
+            </div>
           </div>
+
+          <Legend />
+
+          {loading && (
+            <div className="legend" style={{ bottom: 'auto', top: 70, left: '50%', transform: 'translateX(-50%)' }}>
+              Cargando ubicaciones…
+            </div>
+          )}
+
+          {selected && !showNewForm && (
+            <LocationPanel
+              location={selected}
+              isAdmin={session.isAdmin}
+              onClose={() => setSelectedId(null)}
+              onUpdated={applyPatch}
+            />
+          )}
+
+          {showNewForm && (
+            <NewLocationForm
+              placedPoint={placedPoint}
+              onRemark={() => setPlacedPoint(null)}
+              onClose={closeReport}
+              onSent={() => { setPlacedPoint(null); loadLocations() }}
+            />
+          )}
         </div>
 
-        <Legend />
-
-        {showFeed && (
-          <UpdatesFeed
-            locations={locations}
-            onClose={() => setShowFeed(false)}
-            onPickLocation={handlePickLocation}
-          />
+        {view === 'directory' && (
+          <DirectoryPage locations={locations} onPick={pickFromDirectory} />
         )}
 
-        {loading && (
-          <div className="legend" style={{ bottom: 'auto', top: 70, left: '50%', transform: 'translateX(-50%)' }}>
-            Cargando ubicaciones…
-          </div>
-        )}
-
-        {selected && !showNewForm && (
-          <LocationPanel
-            location={selected}
-            isAdmin={session.isAdmin}
-            onClose={() => setSelectedId(null)}
-            onUpdated={applyPatch}
-          />
-        )}
-
-        {showNewForm && (
-          <NewLocationForm
-            placedPoint={placedPoint}
-            onRemark={() => { setPlacedPoint(null); setPlacing(true) }}
-            onClose={closeNewForm}
-            onSent={() => { setPlacing(false); loadLocations() }}
-          />
+        {view === 'about' && (
+          <AboutPage onReport={() => navigate('report')} />
         )}
       </div>
 
-      {showDonate && (
+      {view === 'donate' && (
         <DonateMatcher
           locations={locations}
-          onClose={() => setShowDonate(false)}
-          onPickLocation={handlePickLocation}
+          onClose={() => setView('map')}
+          onPickLocation={(l) => { setView('map'); handlePickLocation(l) }}
+        />
+      )}
+
+      {view === 'updates' && (
+        <UpdatesFeed
+          locations={locations}
+          onClose={() => setView('map')}
+          onPickLocation={(l) => { setView('map'); handlePickLocation(l) }}
         />
       )}
 

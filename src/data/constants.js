@@ -1,132 +1,50 @@
 // Niveles de gravedad usados para colorear el mapa y las fichas.
 export const STATUS_LEVELS = {
-  critico: { color: '#dc2626', label: 'Crítico' },
-  alto: { color: '#ea580c', label: 'Alto' },
-  medio: { color: '#d97706', label: 'Medio' },
-  estable: { color: '#16a34a', label: 'Estable' },
-  sin_datos: { color: '#94a3b8', label: 'Sin datos' },
+  critico: { label: 'Critico', color: '#dc2626' },
+  alto: { label: 'Alto', color: '#ea580c' },
+  medio: { label: 'Medio', color: '#d97706' },
+  estable: { label: 'Estable', color: '#16a34a' },
+  sin_datos: { label: 'Sin datos', color: '#94a3b8' },
 }
 
 export const STATUS_ORDER = ['critico', 'alto', 'medio', 'estable', 'sin_datos']
 
-// ---------------------------------------------------------------------------
-// Categorias de puntos de ayuda. Las etiquetas se traducen via i18n usando la
-// clave `category.<key>`. El color se usa para los marcadores del mapa y los
-// distintivos (badges).
-// ---------------------------------------------------------------------------
-export const CATEGORIES = [
-  { key: 'hospital', color: '#dc2626' },
-  { key: 'punto_medico', color: '#db2777' },
-  { key: 'centro_acopio', color: '#2563eb' },
-  { key: 'refugio', color: '#0d9488' },
-  { key: 'organizacion', color: '#0891b2' },
-  { key: 'rescate', color: '#ea580c' },
-  { key: 'parroquia', color: '#64748b' },
-  { key: 'otro', color: '#475569' },
-]
-
-export const CATEGORY_KEYS = CATEGORIES.map((c) => c.key)
-export const CATEGORY_COLOR = Object.fromEntries(CATEGORIES.map((c) => [c.key, c.color]))
-
-// Categorias que el publico puede elegir al proponer / reportar un punto nuevo.
-export const REPORTABLE_CATEGORIES = [
-  'centro_acopio',
-  'refugio',
-  'punto_medico',
-  'hospital',
-  'organizacion',
-  'rescate',
-  'otro',
-]
-
-// ---------------------------------------------------------------------------
-// Estado de verificacion de cada punto.
-// ---------------------------------------------------------------------------
-export const VERIFICATION = {
-  verificado: { color: '#16a34a' },
-  pendiente: { color: '#d97706' },
-  sin_actualizar: { color: '#94a3b8' },
+// Tipos de ubicacion. "otro" es un punto generico (refugio, centro de acopio,
+// albergue, etc.) que se muestra con un punto azul.
+export const KIND_META = {
+  parroquia: { label: 'Parroquia', color: '#1d4ed8', icon: 'pin' },
+  hospital: { label: 'Hospital', color: '#be185d', icon: 'hospital' },
+  otro: { label: 'Otro punto', color: '#2563eb', icon: 'box' },
 }
-export const VERIFICATION_KEYS = ['verificado', 'pendiente', 'sin_actualizar']
 
-// Tipos de actualizacion (timeline + reportes).
-export const UPDATE_TYPES = ['estado', 'necesidades', 'recursos', 'sangre', 'donacion', 'otro']
+// Tipos de punto que el publico puede proponer como NUEVA ubicacion.
+export const NEW_KINDS = [
+  { value: 'hospital', label: 'Hospital / centro de salud' },
+  { value: 'otro', label: 'Otro punto (refugio, centro de acopio, albergue…)' },
+]
+
+// Tipos de actualizacion que puede enviar el publico.
+export const UPDATE_TYPES = [
+  { value: 'estado', label: 'Estado general / rescate' },
+  { value: 'suministros', label: 'Suministros necesarios' },
+  { value: 'sangre', label: 'Donacion de sangre' },
+  { value: 'punto_donacion', label: 'Punto de entrega de donaciones' },
+  { value: 'otro', label: 'Otro' },
+]
 
 export const STATES = ['Distrito Capital', 'Miranda', 'La Guaira']
-
-// ---------------------------------------------------------------------------
-// Compatibilidad con componentes existentes (admin). KIND_META mapea el campo
-// heredado `kind` y las categorias nuevas a color + etiqueta. Sin emojis.
-// ---------------------------------------------------------------------------
-const CATEGORY_LABELS_ES = {
-  hospital: 'Hospital',
-  punto_medico: 'Punto médico',
-  centro_acopio: 'Centro de acopio',
-  refugio: 'Refugio',
-  organizacion: 'Organización comunitaria',
-  rescate: 'Equipo de rescate',
-  parroquia: 'Parroquia',
-  otro: 'Otro punto',
-}
-
-export const KIND_META = Object.fromEntries(
-  CATEGORIES.map((c) => [c.key, { color: c.color, icon: '', label: CATEGORY_LABELS_ES[c.key] || 'Otro punto' }]),
-)
-
-export const NEW_KINDS = REPORTABLE_CATEGORIES.map((key) => ({
-  value: key,
-  label: CATEGORY_LABELS_ES[key] || 'Otro punto',
-}))
-
-// Sugerencias comunes de necesidades / recursos (chips en formularios).
-export const COMMON_NEEDS = [
-  'Agua potable',
-  'Alimentos no perecederos',
-  'Medicinas',
-  'Insumos medicos',
-  'Ropa',
-  'Cobijas / colchones',
-  'Pañales',
-  'Productos de higiene',
-  'Voluntarios',
-  'Transporte',
-  'Combustible',
-  'Donacion de sangre',
-]
-
-export const COMMON_RESOURCES = [
-  'Albergue / refugio',
-  'Comida caliente',
-  'Atencion medica',
-  'Agua',
-  'Punto de carga / electricidad',
-  'Internet / comunicaciones',
-  'Transporte',
-  'Almacenamiento',
-  'Voluntarios disponibles',
-]
 
 // Estado inicial (vacio) de una ubicacion antes de cualquier actualizacion.
 export function emptyStatus() {
   return {
-    category: 'otro',
-    verification: 'sin_actualizar',
     status_level: 'sin_datos',
     summary: '',
-    description: '',
-    address: '',
-    contact_phone: '',
-    contact_whatsapp: '',
-    contact_email: '',
-    website: '',
-    needs: [],
-    resources: [],
-    donation_instructions: '',
-    photos: [],
     supplies_needed: '',
     donation_poc: '',
+    // Parroquia
     rescue_teams: '',
     buildings_searched: '',
+    // Hospital
     people_aided: '',
     blood_needed: false,
     blood_types: '',
