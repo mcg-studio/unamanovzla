@@ -308,6 +308,7 @@ a { color: var(--accent); }
   bottom: 76px; left: 12px;
   z-index: 1000;
   font-size: 12px;
+  display: flex; flex-direction: column-reverse; align-items: flex-start;
 }
 .legend__toggle {
   display: inline-flex; align-items: center; gap: 6px;
@@ -318,7 +319,7 @@ a { color: var(--accent); }
 .legend__chev { transition: transform 0.15s ease; }
 .legend__chev--open { transform: rotate(180deg); }
 .legend__panel {
-  margin-top: 8px;
+  margin-bottom: 8px;
   background: rgba(255,255,255,0.98);
   padding: 10px 12px; border-radius: 12px; box-shadow: var(--shadow);
   border: 1px solid var(--border);
