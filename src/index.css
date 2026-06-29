@@ -747,7 +747,6 @@ a { color: var(--accent); }
   .header__subtitle { display: none; }
   .header__logo { font-size: 20px; }
   .header__btn { padding: 6px 9px; font-size: 12px; }
-  .legend { font-size: 11px; padding: 8px 10px; bottom: 10px; left: 8px; }
   .modal { max-height: 92vh; }
   .modal__body { padding: 14px 16px; }
   /* Evita el zoom automatico de iOS al enfocar inputs. */
