@@ -204,6 +204,7 @@ export default function App() {
               placedPoint={placedPoint}
               onRemark={() => setPlacedPoint(null)}
               onClose={closeReport}
+              onSetPoint={(pt) => { setPlacedPoint(pt); setFocus({ lat: pt.lat, lng: pt.lng, ts: Date.now() }) }}
               onSent={() => { setPlacedPoint(null); loadLocations() }}
             />
           )}

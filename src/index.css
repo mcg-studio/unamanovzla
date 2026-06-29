@@ -430,6 +430,129 @@ a { color: var(--accent); }
 .notice--ok { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
 .notice--err { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
 
+/* ==========================================================================
+   FORMULARIO MULTI-PASO (Reportar nuevo punto) — mobile-first
+   ========================================================================== */
+.wizard__progress { display: flex; align-items: center; gap: 4px; margin-top: 14px; }
+.wizard__step { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; }
+.wizard__step:not(:last-child)::after {
+  content: ''; flex: 1; height: 2px; background: var(--border); border-radius: 2px;
+}
+.wizard__dot {
+  flex: none; width: 24px; height: 24px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800;
+  background: #e2e8f0; color: #64748b; border: 2px solid transparent;
+}
+.wizard__label {
+  font-size: 11px; font-weight: 700; color: #94a3b8;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.wizard__step--current .wizard__dot { background: var(--brand); color: #fff; }
+.wizard__step--current .wizard__label { color: var(--text); }
+.wizard__step--done .wizard__dot { background: var(--estable); color: #fff; }
+.wizard__step--done::after { background: var(--estable); }
+
+.wizard__body { flex: 1; min-height: 0; }
+.wizard__pane { display: flex; flex-direction: column; }
+.wizard__body input:not([type="checkbox"]):not([type="file"]),
+.wizard__body select,
+.wizard__body textarea {
+  width: 100%; padding: 12px; font-size: 16px;
+  border: 1px solid var(--border); border-radius: 10px; font-family: inherit;
+  background: #fff; color: var(--text);
+}
+.wizard__body textarea { min-height: 84px; resize: vertical; }
+.wizard__flabel { font-size: 13px; font-weight: 700; margin: 16px 0 6px; }
+.wizard__hint { font-size: 12px; color: var(--muted); margin: 8px 0 0; }
+.wizard__or { text-align: center; color: var(--muted); font-size: 13px; margin: 12px 0; position: relative; }
+.wizard__check { display: flex; align-items: center; gap: 10px; margin: 14px 0 6px; font-size: 14px; font-weight: 600; }
+.wizard__check input { width: 20px; height: 20px; flex: none; }
+.wizard__disclaimer { display: flex; align-items: flex-start; gap: 6px; font-size: 12px; color: var(--muted); margin-top: 16px; }
+.wizard__disclaimer svg { flex: none; margin-top: 1px; }
+
+.btn--lg { padding: 14px 16px; font-size: 15px; border-radius: 12px; }
+
+/* Caja de ubicacion marcada */
+.locbox {
+  display: flex; align-items: flex-start; gap: 8px;
+  background: #eff6ff; border: 1px solid #bfdbfe; color: #1e40af;
+  border-radius: 12px; padding: 12px; font-size: 13px; line-height: 1.45;
+}
+.locbox svg { flex: none; margin-top: 1px; }
+.locbox--ok { background: #dcfce7; border-color: #bbf7d0; color: #166534; }
+.locbox .linkbtn { color: inherit; font-size: inherit; }
+
+/* Toggle Necesita / Ofrece ayuda */
+.seg-toggle { display: flex; background: #f1f5f9; border-radius: 12px; padding: 4px; gap: 4px; }
+.seg-toggle__btn {
+  flex: 1; border: none; background: transparent; border-radius: 9px;
+  padding: 10px 8px; font-size: 14px; font-weight: 700; color: var(--muted);
+}
+.seg-toggle__btn--active { background: #fff; color: var(--brand); box-shadow: var(--shadow-sm); }
+
+/* Tarjetas de tipo de punto */
+.type-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+.type-card {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+  min-height: 88px; padding: 14px 10px; text-align: center;
+  background: #fff; border: 2px solid var(--border); border-radius: 14px;
+  font-size: 13px; font-weight: 700; color: var(--text); color-scheme: light;
+}
+.type-card svg { color: var(--muted); }
+.type-card--active { border-color: var(--brand); background: #eff6ff; color: var(--brand); }
+.type-card--active svg { color: var(--brand); }
+
+/* Chips de suministros */
+.chip-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip-select {
+  border: 1.5px solid var(--border); background: #fff; color: var(--text);
+  border-radius: 999px; padding: 9px 14px; font-size: 14px; font-weight: 600;
+}
+.chip-select--active { border-color: var(--brand); background: var(--brand); color: #fff; }
+
+/* Rangos de personas */
+.range-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.range-btn {
+  flex: 1; min-width: 64px; border: 1.5px solid var(--border); background: #fff; color: var(--text);
+  border-radius: 10px; padding: 10px 8px; font-size: 14px; font-weight: 700;
+}
+.range-btn--active { border-color: var(--brand); background: #eff6ff; color: var(--brand); }
+
+/* Captura de medios */
+.media-actions { display: flex; flex-direction: column; gap: 10px; }
+.media-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 13px 14px; border-radius: 12px; cursor: pointer;
+  background: #f1f5f9; border: 1.5px dashed var(--border); color: var(--text);
+  font-size: 14px; font-weight: 700;
+}
+.media-btn--rec { background: #fee2e2; border-color: #fecaca; color: #991b1b; border-style: solid; }
+.rec-dot { width: 12px; height: 12px; border-radius: 50%; background: #dc2626; animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+.media-preview { display: flex; align-items: center; gap: 10px; }
+.media-preview audio { flex: 1; height: 38px; }
+.photo-thumb { width: 64px; height: 64px; object-fit: cover; border-radius: 10px; border: 1px solid var(--border); }
+.iconbtn { flex: none; width: 38px; height: 38px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--border); background: #fff; border-radius: 10px; color: #b91c1c; }
+
+/* Mas detalles colapsable */
+.more-toggle {
+  display: inline-flex; align-items: center; gap: 8px; margin-top: 18px;
+  background: none; border: none; padding: 0; font-size: 14px; font-weight: 700; color: var(--brand);
+}
+.more-toggle__chev { transition: transform 0.15s ease; }
+.more-toggle__chev--open { transform: rotate(180deg); }
+.more-section { display: flex; flex-direction: column; }
+
+/* Pie sticky con navegacion */
+.wizard__footer {
+  flex: none; display: flex; gap: 10px; align-items: center;
+  padding: 12px 18px calc(12px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--border); background: #fff;
+}
+.wizard__footer .btn { padding: 13px 16px; }
+.wizard__next { flex: 1; }
+
 /* Modal (admin / login) */
 .modal-overlay {
   position: fixed; inset: 0; background: rgba(15,23,42,0.55);
