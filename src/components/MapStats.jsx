@@ -19,12 +19,14 @@ export default function MapStats({ locations = [] }) {
 
   return (
     <div className="mapstats">
-      <div className="mapstats__strip" role="list">
-        {pills.map((p, i) => (
-          <span className="mapstats__pill" role="listitem" key={i}>
-            <strong>{p.value}</strong> {p.label}
-          </span>
-        ))}
+      <div className="mapstats__strip">
+        <div className="mapstats__pills" role="list">
+          {pills.map((p, i) => (
+            <span className="mapstats__pill" role="listitem" key={i}>
+              <strong>{p.value}</strong> {p.label}
+            </span>
+          ))}
+        </div>
         <button
           className={'mapstats__info' + (open ? ' mapstats__info--on' : '')}
           onClick={() => setOpen((v) => !v)}

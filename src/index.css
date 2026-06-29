@@ -338,9 +338,13 @@ a { color: var(--accent); }
   display: flex; align-items: center; gap: 6px;
   background: rgba(255,255,255,0.96); border: 1px solid var(--border);
   border-radius: 999px; box-shadow: var(--shadow);
-  padding: 6px 8px; overflow-x: auto; scrollbar-width: none;
+  padding: 6px 8px;
 }
-.mapstats__strip::-webkit-scrollbar { display: none; }
+.mapstats__pills {
+  display: flex; align-items: center; gap: 6px;
+  min-width: 0; overflow-x: auto; scrollbar-width: none;
+}
+.mapstats__pills::-webkit-scrollbar { display: none; }
 .mapstats__pill {
   display: inline-flex; align-items: baseline; gap: 4px;
   font-size: 12px; color: var(--muted); white-space: nowrap;
@@ -394,6 +398,28 @@ a { color: var(--accent); }
   flex: none; width: 30px; height: 30px; border-radius: 8px;
   display: inline-flex; align-items: center; justify-content: center;
   background: #f1f5f9; border: none; color: var(--muted);
+}
+
+/* Controles del mapa en pantallas pequeñas */
+@media (max-width: 480px) {
+  /* El zoom de Leaflet choca con el FAB; en táctil se usa pellizcar para acercar */
+  .map .leaflet-control-zoom { display: none; }
+  /* Atribución por encima de la tira de estadísticas */
+  .map .leaflet-bottom.leaflet-right { bottom: 46px; right: 0; }
+
+  /* Tira de estadísticas: ancho completo y desplazable, sin cortarse */
+  .mapstats {
+    left: 12px; right: 12px; bottom: 10px;
+    transform: none; width: auto; max-width: none;
+  }
+  .mapstats__pill { font-size: 11px; padding: 2px 7px; }
+  .mapstats__pill strong { font-size: 14px; }
+
+  /* Leyenda y FAB en una fila por encima de la atribución */
+  .legend { bottom: 72px; }
+  .fab-report {
+    bottom: 72px; padding: 12px 16px; font-size: 13px;
+  }
 }
 
 /* Side panel */
@@ -885,6 +911,17 @@ a { color: var(--accent); }
   .nav__drawer-link:hover { background: #f1f5f9; }
   .nav__drawer-link--active { background: #eff3ff; color: var(--ve-blue); }
   .nav__drawer-divider { height: 1px; background: var(--border); margin: 6px 8px; }
+}
+
+@media (max-width: 480px) {
+  .nav__inner { padding: 0 10px; gap: 8px; }
+  .nav__brand { flex: 1; min-width: 0; }
+  .nav__brand-text { min-width: 0; }
+  .nav__title { font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .nav__subtitle { display: none; }
+  .nav__hamburger { width: 36px; height: 36px; flex: none; }
+  .nav__actions { gap: 6px; }
+  .nav__lang { padding: 7px 8px; }
 }
 
 /* ==========================================================================
