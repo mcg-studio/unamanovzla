@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { repo } from '../lib/repository'
 import { STATES, SUPPLY_CHIPS } from '../data/constants'
 import Icon from './Icons'
@@ -68,12 +68,8 @@ export default function NewLocationForm({ placedPoint, onRemark, onClose, onSent
   const [status, setStatus] = useState({ sending: false, ok: false, error: '' })
   const [hp, setHp] = useState('') // honeypot anti-spam
 
-  // Foto y nota de voz (captura local con vista previa).
+  // Foto (captura local con vista previa).
   const [photo, setPhoto] = useState(null) // { url, name }
-  const [recording, setRecording] = useState(false)
-  const [voice, setVoice] = useState(null) // { url }
-  const mediaRef = useRef(null)
-  const chunksRef = useRef([])
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
   const selectedCard = TYPE_CARDS.find((c) => c.id === form.typeId) || TYPE_CARDS[0]
@@ -131,31 +127,6 @@ export default function NewLocationForm({ placedPoint, onRemark, onClose, onSent
     }))
   }
 
-  // --- Nota de voz ---
-  async function startRecording() {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      const mr = new MediaRecorder(stream)
-      chunksRef.current = []
-      mr.ondataavailable = (e) => { if (e.data.size) chunksRef.current.push(e.data) }
-      mr.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: 'audio/webm' })
-        setVoice({ url: URL.createObjectURL(blob) })
-        stream.getTracks().forEach((t) => t.stop())
-      }
-      mediaRef.current = mr
-      mr.start()
-      setRecording(true)
-    } catch {
-      setStepError('No pudimos acceder al micrófono.')
-    }
-  }
-  function stopRecording() {
-    if (mediaRef.current && recording) {
-      mediaRef.current.stop()
-      setRecording(false)
-    }
-  }
   function onPhoto(e) {
     const file = e.target.files?.[0]
     if (file) setPhoto({ url: URL.createObjectURL(file), name: file.name })
@@ -210,10 +181,7 @@ export default function NewLocationForm({ placedPoint, onRemark, onClose, onSent
     const modeLabel = form.helpMode === 'offers' ? 'Ofrece ayuda' : 'Necesita ayuda'
     proposed.description = `${selectedCard.label} · ${modeLabel}`
 
-    const extras = []
-    if (photo) extras.push('foto')
-    if (voice) extras.push('nota de voz')
-    const mediaNote = extras.length ? ` (incluye ${extras.join(' y ')})` : ''
+    const mediaNote = photo ? ' (incluye foto)' : ''
     const message =
       `[${selectedCard.label} · ${modeLabel}] ` +
       (form.summary.trim() || `Propuesta de nuevo punto: ${form.name.trim()}`) +
@@ -428,25 +396,6 @@ export default function NewLocationForm({ placedPoint, onRemark, onClose, onSent
         {step === 4 && (
           <div className="wizard__pane">
             <div className="media-actions">
-              {!voice && !recording && (
-                <button type="button" className="media-btn" onClick={startRecording}>
-                  <Icon name="mic" size={18} /> Grabar nota de voz
-                </button>
-              )}
-              {recording && (
-                <button type="button" className="media-btn media-btn--rec" onClick={stopRecording}>
-                  <span className="rec-dot" /> Detener grabación
-                </button>
-              )}
-              {voice && (
-                <div className="media-preview">
-                  <audio src={voice.url} controls />
-                  <button type="button" className="iconbtn" onClick={() => setVoice(null)} aria-label="Eliminar nota de voz">
-                    <Icon name="trash" size={16} />
-                  </button>
-                </div>
-              )}
-
               <label className="media-btn">
                 <Icon name="camera" size={18} /> {photo ? 'Cambiar foto' : 'Agregar foto'}
                 <input type="file" accept="image/*" capture="environment" onChange={onPhoto} hidden />
