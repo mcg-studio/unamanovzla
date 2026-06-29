@@ -336,6 +336,75 @@ a { color: var(--accent); }
 .muted { color: var(--muted); }
 .updated { font-size: 12px; color: var(--muted); margin-top: 4px; }
 
+.panel__badges { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 8px; }
+.panel__desc { font-size: 14px; line-height: 1.55; color: #334155; margin: 12px 0; }
+
+.verif-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12px; font-weight: 700;
+  padding: 3px 9px; border-radius: 999px;
+  background: #fff; border: 1px solid currentColor;
+}
+
+/* Contacto */
+.contact { margin: 12px 0; }
+.contact__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.contact__row { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #334155; }
+.contact__row svg { color: var(--ve-blue); flex: none; }
+.contact__row a { color: var(--ve-blue); text-decoration: none; word-break: break-word; }
+.contact__row a:hover { text-decoration: underline; }
+
+/* Bitacora / timeline */
+.timeline { margin-top: 20px; border-top: 1px solid var(--border); padding-top: 16px; }
+.timeline__head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.timeline__title { font-size: 15px; font-weight: 800; margin: 0; }
+.timeline__add {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-size: 12px; font-weight: 700; color: var(--ve-blue);
+  background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 5px 10px;
+}
+.timeline__add:hover { background: #dbeafe; }
+.timeline__form {
+  display: flex; flex-direction: column; gap: 8px;
+  background: #f8fafc; border: 1px solid var(--border); border-radius: 12px;
+  padding: 12px; margin: 12px 0;
+}
+.timeline__form select,
+.timeline__form textarea,
+.timeline__form input {
+  width: 100%; border: 1px solid var(--border); border-radius: 8px;
+  padding: 8px 10px; font-size: 13px; font-family: inherit;
+}
+.timeline__error { color: #b91c1c; font-size: 13px; margin: 8px 0; }
+.timeline__loading,
+.timeline__empty { color: var(--muted); font-size: 13px; font-style: italic; margin: 12px 0; }
+
+.timeline__list { list-style: none; margin: 14px 0 0; padding: 0; position: relative; }
+.timeline__list::before {
+  content: ''; position: absolute; left: 13px; top: 6px; bottom: 6px;
+  width: 2px; background: var(--border);
+}
+.tl-item { display: flex; gap: 12px; padding-bottom: 16px; position: relative; }
+.tl-item__icon {
+  flex: none; width: 28px; height: 28px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: #eff6ff; color: var(--ve-blue); border: 2px solid #fff;
+  box-shadow: 0 0 0 1px var(--border); z-index: 1;
+}
+.tl-item__body { flex: 1; min-width: 0; }
+.tl-item__meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.tl-item__kind { font-size: 12px; font-weight: 700; color: #1e293b; }
+.tl-item__time { font-size: 11px; color: var(--muted); }
+.tl-item__text { font-size: 13px; line-height: 1.5; margin: 4px 0; color: #334155; white-space: pre-wrap; }
+.tl-item__photo { width: 100%; border-radius: 10px; margin-top: 6px; }
+.tl-item__author { font-size: 11px; color: var(--muted); }
+.tl-item__delete {
+  display: inline-flex; align-items: center; gap: 4px;
+  margin-top: 6px; font-size: 11px; font-weight: 600; color: #b91c1c;
+  background: none; border: none; padding: 0;
+}
+.tl-item__delete:hover { text-decoration: underline; }
+
 /* Buttons */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 6px;
@@ -657,6 +726,22 @@ a { color: var(--accent); }
 .stat__body { display: flex; flex-direction: column; line-height: 1.1; min-width: 0; }
 .stat__value { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; }
 .stat__label { font-size: 12px; color: var(--muted); }
+
+.hero__note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  max-width: 1320px;
+  margin: 12px auto 0;
+  padding: 10px 14px;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 10px;
+  color: #854d0e;
+  font-size: 13px;
+  line-height: 1.45;
+}
+.hero__note svg { flex: none; margin-top: 1px; }
 
 .hero--collapsed { padding-bottom: 12px; }
 .hero--collapsed .hero__title { font-size: clamp(17px, 2.6vw, 20px); }

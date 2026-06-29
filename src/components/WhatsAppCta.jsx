@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Icon from './Icons'
+import { useI18n } from '../lib/i18n'
 
 // Punto de entrada para la futura integración con WhatsApp.
 // Por ahora muestra una sección placeholder; cuando exista el número/bot real,
@@ -7,6 +8,7 @@ import Icon from './Icons'
 const WHATSAPP_LINK = null
 
 export default function WhatsAppCta({ onReport, compact = false }) {
+  const { t } = useI18n()
   const [showInfo, setShowInfo] = useState(false)
 
   function handleClick() {
@@ -23,25 +25,21 @@ export default function WhatsAppCta({ onReport, compact = false }) {
         <Icon name="whatsapp" size={compact ? 22 : 28} />
       </div>
       <div className="whatsapp__content">
-        <h3 className="whatsapp__title">Reportar por WhatsApp</h3>
-        <p className="whatsapp__desc">
-          ¿Tienes información sobre una necesidad, hospital, refugio o centro de acopio? Envíanos un
-          mensaje por WhatsApp para que nuestro equipo pueda revisarlo y agregarlo al mapa.
-        </p>
+        <h3 className="whatsapp__title">{t('wa.title')}</h3>
+        <p className="whatsapp__desc">{t('wa.desc')}</p>
         <div className="whatsapp__actions">
           <button className="whatsapp__btn" onClick={handleClick}>
-            <Icon name="whatsapp" size={18} /> Reportar por WhatsApp
+            <Icon name="whatsapp" size={18} /> {t('wa.button')}
           </button>
           {onReport && (
             <button className="whatsapp__alt" onClick={onReport}>
-              o reporta desde la app
+              {t('wa.alt')}
             </button>
           )}
         </div>
         {showInfo && (
           <p className="whatsapp__note">
-            <Icon name="clock" size={14} /> Integración con WhatsApp disponible próximamente.
-            Mientras tanto, puedes reportar directamente desde la aplicación.
+            <Icon name="clock" size={14} /> {t('wa.soon')}
           </p>
         )}
       </div>

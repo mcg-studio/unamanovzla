@@ -1,9 +1,11 @@
 import { STATUS_LEVELS, STATUS_ORDER, KIND_META } from '../data/constants'
+import { useI18n } from '../lib/i18n'
 
 export default function Legend() {
+  const { t } = useI18n()
   return (
     <div className="legend">
-      <h4>Nivel de gravedad</h4>
+      <h4>{t('legend.title')}</h4>
       {STATUS_ORDER.map((k) => (
         <div className="legend__row" key={k}>
           <span className="swatch" style={{ background: STATUS_LEVELS[k].color }} />

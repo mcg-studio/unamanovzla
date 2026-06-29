@@ -12,9 +12,12 @@ const POINT_TYPES = [
   { icon: 'pin', es: 'Otros puntos de apoyo', en: 'Other support points' },
 ]
 
+const HELP_ICONS = ['edit', 'clock', 'gift', 'globe', 'users']
+
 export default function AboutPage({ onReport }) {
   const { t, lang } = useI18n()
-  const steps = [t('about.how1'), t('about.how2'), t('about.how3'), t('about.how4')]
+  const steps = [t('about.how1'), t('about.how2'), t('about.how3'), t('about.how4'), t('about.how5')]
+  const helpItems = [t('about.help1'), t('about.help2'), t('about.help3'), t('about.help4'), t('about.help5')]
 
   return (
     <div className="page page--about">
@@ -30,6 +33,8 @@ export default function AboutPage({ onReport }) {
         <section className="about__body">
           <p>{t('about.p1')}</p>
           <p>{t('about.p2')}</p>
+          <p>{t('about.p3')}</p>
+          <p>{t('about.p4')}</p>
         </section>
 
         <section className="about__section">
@@ -51,6 +56,18 @@ export default function AboutPage({ onReport }) {
               <div key={pt.icon} className="about__type">
                 <span className="about__type-icon"><Icon name={pt.icon} size={20} /></span>
                 <span>{lang === 'en' ? pt.en : pt.es}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className="about__section">
+          <h2 className="about__h2">{t('about.help')}</h2>
+          <div className="about__types">
+            {helpItems.map((item, i) => (
+              <div key={i} className="about__type">
+                <span className="about__type-icon"><Icon name={HELP_ICONS[i]} size={20} /></span>
+                <span>{item}</span>
               </div>
             ))}
           </div>

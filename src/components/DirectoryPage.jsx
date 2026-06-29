@@ -1,11 +1,13 @@
 import { useMemo, useState } from 'react'
 import { KIND_META, STATUS_LEVELS, STATES } from '../data/constants'
 import { normalize, matchLocation } from '../lib/search'
+import { useI18n } from '../lib/i18n'
 import Icon from './Icons'
 
 const KIND_ICON = { hospital: 'hospital', parroquia: 'pin', otro: 'box' }
 
 export default function DirectoryPage({ locations = [], onPick }) {
+  const { t } = useI18n()
   const [query, setQuery] = useState('')
   const [filterState, setFilterState] = useState('all')
   const [filterKind, setFilterKind] = useState('all')
@@ -32,10 +34,8 @@ export default function DirectoryPage({ locations = [], onPick }) {
     <div className="page page--directory">
       <div className="directory">
         <header className="directory__head">
-          <h1 className="page__title">Puntos de ayuda</h1>
-          <p className="page__lead">
-            Hospitales, refugios, centros de acopio y otros puntos registrados en la zona afectada.
-          </p>
+          <h1 className="page__title">{t('dir.title')}</h1>
+          <p className="page__lead">{t('dir.lead')}</p>
         </header>
 
         <div className="directory__controls">
@@ -45,27 +45,27 @@ export default function DirectoryPage({ locations = [], onPick }) {
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Buscar por nombre, zona o necesidad…"
-              aria-label="Buscar puntos de ayuda"
+              placeholder={t('dir.search')}
+              aria-label={t('dir.title')}
             />
           </div>
           <div className="directory__filters">
-            <select value={filterState} onChange={(e) => setFilterState(e.target.value)} aria-label="Filtrar por estado">
-              <option value="all">Todos los estados</option>
+            <select value={filterState} onChange={(e) => setFilterState(e.target.value)} aria-label={t('dir.allStates')}>
+              <option value="all">{t('dir.allStates')}</option>
               {STATES.map((s) => (
                 <option key={s} value={s}>{s}</option>
               ))}
             </select>
-            <select value={filterKind} onChange={(e) => setFilterKind(e.target.value)} aria-label="Filtrar por tipo">
-              <option value="all">Todos los tipos</option>
-              <option value="hospital">Hospitales</option>
-              <option value="parroquia">Parroquias</option>
-              <option value="otro">Otros puntos</option>
+            <select value={filterKind} onChange={(e) => setFilterKind(e.target.value)} aria-label={t('dir.allKinds')}>
+              <option value="all">{t('dir.allKinds')}</option>
+              <option value="hospital">{KIND_META.hospital.label}</option>
+              <option value="parroquia">{KIND_META.parroquia.label}</option>
+              <option value="otro">{KIND_META.otro.label}</option>
             </select>
           </div>
         </div>
 
-        <p className="directory__count">{filtered.length} puntos</p>
+        <p className="directory__count">{filtered.length} {t('dir.count')}</p>
 
         <ul className="directory__list">
           {filtered.map((l) => {
@@ -95,7 +95,7 @@ export default function DirectoryPage({ locations = [], onPick }) {
             )
           })}
           {filtered.length === 0 && (
-            <li className="directory__empty">No se encontraron puntos con esos filtros.</li>
+            <li className="directory__empty">{t('dir.empty')}</li>
           )}
         </ul>
       </div>

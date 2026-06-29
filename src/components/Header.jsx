@@ -43,7 +43,7 @@ export default function Header({
             <span className="nav__logo-bar nav__logo-bar--r" />
           </span>
           <span className="nav__brand-text">
-            <span className="nav__title">Mapa de Ayuda</span>
+            <span className="nav__title">Una Mano</span>
             <span className="nav__subtitle">{t('nav.subtitle')}</span>
           </span>
         </button>

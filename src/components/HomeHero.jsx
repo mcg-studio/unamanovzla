@@ -2,17 +2,20 @@ import { useMemo, useState } from 'react'
 import Icon from './Icons'
 import { useI18n } from '../lib/i18n'
 
+const WEEK = 7 * 24 * 60 * 60 * 1000
+
 function computeStats(locations) {
+  const now = Date.now()
   let registered = locations.length
   let verified = 0
+  let recent = 0
   let active = 0
-  let critical = 0
   for (const l of locations) {
-    if (l.verification === 'verificado' || l.updated_at) verified += 1
+    if (l.verification === 'verificado') verified += 1
+    if (l.updated_at && now - new Date(l.updated_at).getTime() <= WEEK) recent += 1
     if (l.status_level && l.status_level !== 'sin_datos') active += 1
-    if (l.status_level === 'critico') critical += 1
   }
-  return { registered, verified, active, critical }
+  return { registered, verified, recent, active }
 }
 
 export default function HomeHero({ locations = [], onExplore, onReport }) {
@@ -23,8 +26,8 @@ export default function HomeHero({ locations = [], onExplore, onReport }) {
   const CARDS = [
     { key: 'registered', label: t('hero.stat.points'), value: stats.registered, icon: 'pin' },
     { key: 'verified', label: t('hero.stat.verified'), value: stats.verified, icon: 'check' },
-    { key: 'recent', label: t('hero.stat.help'), value: stats.active, icon: 'heart' },
-    { key: 'active', label: t('hero.stat.critical'), value: stats.critical, icon: 'clock' },
+    { key: 'recent', label: t('hero.stat.recent'), value: stats.recent, icon: 'clock' },
+    { key: 'active', label: t('hero.stat.active'), value: stats.active, icon: 'heart' },
   ]
 
   return (
@@ -67,6 +70,11 @@ export default function HomeHero({ locations = [], onExplore, onReport }) {
           </div>
         ))}
       </div>
+
+      <p className="hero__note">
+        <Icon name="info" size={15} />
+        <span>{t('hero.note')}</span>
+      </p>
     </section>
   )
 }
