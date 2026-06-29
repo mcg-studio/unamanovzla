@@ -511,6 +511,21 @@ a { color: var(--accent); }
 .nav__btn--ghost { background: #fff; color: #475569; border-color: var(--border); }
 .nav__btn--ghost:hover { background: #f1f5f9; }
 
+.nav__lang {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 10px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 700;
+  flex: none;
+}
+.nav__lang:hover { background: #f1f5f9; }
+
 .nav__hamburger {
   display: none;
   align-items: center;

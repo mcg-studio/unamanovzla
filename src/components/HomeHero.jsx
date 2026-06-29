@@ -1,32 +1,30 @@
 import { useMemo, useState } from 'react'
 import Icon from './Icons'
-
-const DAY = 24 * 60 * 60 * 1000
+import { useI18n } from '../lib/i18n'
 
 function computeStats(locations) {
-  const now = Date.now()
   let registered = locations.length
   let verified = 0
-  let recent = 0
   let active = 0
+  let critical = 0
   for (const l of locations) {
-    const updated = l.updated_at ? new Date(l.updated_at).getTime() : 0
-    if (updated) verified += 1
-    if (updated && now - updated <= 7 * DAY) recent += 1
+    if (l.verification === 'verificado' || l.updated_at) verified += 1
     if (l.status_level && l.status_level !== 'sin_datos') active += 1
+    if (l.status_level === 'critico') critical += 1
   }
-  return { registered, verified, recent, active }
+  return { registered, verified, active, critical }
 }
 
 export default function HomeHero({ locations = [], onExplore, onReport }) {
   const [collapsed, setCollapsed] = useState(false)
+  const { t } = useI18n()
   const stats = useMemo(() => computeStats(locations), [locations])
 
   const CARDS = [
-    { key: 'registered', label: 'Puntos registrados', value: stats.registered, icon: 'pin' },
-    { key: 'verified', label: 'Puntos verificados', value: stats.verified, icon: 'check' },
-    { key: 'recent', label: 'Actualizaciones recientes', value: stats.recent, icon: 'clock' },
-    { key: 'active', label: 'Centros de ayuda activos', value: stats.active, icon: 'heart' },
+    { key: 'registered', label: t('hero.stat.points'), value: stats.registered, icon: 'pin' },
+    { key: 'verified', label: t('hero.stat.verified'), value: stats.verified, icon: 'check' },
+    { key: 'recent', label: t('hero.stat.help'), value: stats.active, icon: 'heart' },
+    { key: 'active', label: t('hero.stat.critical'), value: stats.critical, icon: 'clock' },
   ]
 
   return (
@@ -34,20 +32,17 @@ export default function HomeHero({ locations = [], onExplore, onReport }) {
       <div className="hero__main">
         <div className="hero__text">
           <span className="hero__flag" aria-hidden><span /><span /><span /></span>
-          <h1 className="hero__title">Conectando necesidades, recursos y ayuda en tiempo real.</h1>
+          <h1 className="hero__title">{t('hero.title')}</h1>
           {!collapsed && (
-            <p className="hero__subtitle">
-              Mapa colaborativo de la respuesta al terremoto del 24 de junio en Distrito Capital,
-              Miranda y La Guaira.
-            </p>
+            <p className="hero__subtitle">{t('hero.subtitle')}</p>
           )}
           {!collapsed && (
             <div className="hero__actions">
               <button className="hero__btn hero__btn--primary" onClick={onExplore}>
-                <Icon name="map" size={17} /> Explorar el mapa
+                <Icon name="map" size={17} /> {t('hero.explore')}
               </button>
               <button className="hero__btn" onClick={onReport}>
-                <Icon name="plus" size={17} /> Reportar un punto
+                <Icon name="plus" size={17} /> {t('hero.report')}
               </button>
             </div>
           )}
@@ -55,9 +50,9 @@ export default function HomeHero({ locations = [], onExplore, onReport }) {
         <button
           className="hero__toggle"
           onClick={() => setCollapsed((v) => !v)}
-          aria-label={collapsed ? 'Mostrar información' : 'Ocultar información'}
+          aria-label={collapsed ? t('common.back') : t('common.close')}
         >
-          {collapsed ? 'Mostrar' : 'Ocultar'}
+          {collapsed ? '+' : '–'}
         </button>
       </div>
 

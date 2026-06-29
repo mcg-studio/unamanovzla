@@ -1,25 +1,21 @@
 import Icon from './Icons'
 import WhatsAppCta from './WhatsAppCta'
-
-const HOW_STEPS = [
-  'Organizaciones y ciudadanos reportan información.',
-  'Los administradores verifican los datos.',
-  'Los puntos aprobados aparecen en el mapa.',
-  'Los centros de ayuda pueden actualizar sus necesidades y recursos disponibles.',
-  'Donantes y voluntarios pueden identificar dónde apoyar.',
-]
+import { useI18n } from '../lib/i18n'
 
 const POINT_TYPES = [
-  { icon: 'hospital', label: 'Hospitales' },
-  { icon: 'box', label: 'Centros de acopio' },
-  { icon: 'home', label: 'Refugios' },
-  { icon: 'users', label: 'Organizaciones comunitarias' },
-  { icon: 'shield', label: 'Equipos de rescate' },
-  { icon: 'plus', label: 'Centros médicos' },
-  { icon: 'pin', label: 'Otros puntos de apoyo' },
+  { icon: 'hospital', es: 'Hospitales', en: 'Hospitals' },
+  { icon: 'box', es: 'Centros de acopio', en: 'Collection centers' },
+  { icon: 'home', es: 'Refugios', en: 'Shelters' },
+  { icon: 'users', es: 'Organizaciones comunitarias', en: 'Community organizations' },
+  { icon: 'shield', es: 'Equipos de rescate', en: 'Rescue teams' },
+  { icon: 'plus', es: 'Centros médicos', en: 'Medical centers' },
+  { icon: 'pin', es: 'Otros puntos de apoyo', en: 'Other support points' },
 ]
 
 export default function AboutPage({ onReport }) {
+  const { t, lang } = useI18n()
+  const steps = [t('about.how1'), t('about.how2'), t('about.how3'), t('about.how4')]
+
   return (
     <div className="page page--about">
       <div className="about">
@@ -27,32 +23,19 @@ export default function AboutPage({ onReport }) {
           <span className="about__flag" aria-hidden>
             <span /><span /><span />
           </span>
-          <h1 className="about__title">¿Qué es Mapa de Ayuda?</h1>
-          <p className="about__subtitle">
-            Una plataforma colaborativa para coordinar ayuda durante emergencias en Venezuela.
-          </p>
+          <h1 className="about__title">{t('about.title')}</h1>
+          <p className="about__subtitle">{t('about.subtitle')}</p>
         </header>
 
         <section className="about__body">
-          <p>
-            Mapa de Ayuda conecta comunidades, hospitales, centros de acopio, refugios, voluntarios y
-            organizaciones para facilitar la coordinación de recursos durante situaciones de emergencia.
-          </p>
-          <p>
-            La plataforma permite visualizar necesidades en tiempo real, registrar puntos de ayuda,
-            compartir actualizaciones y conectar donaciones con los lugares donde más se necesitan.
-          </p>
-          <p>
-            La información es colaborativa y es revisada por administradores antes de ser publicada.
-            Nuestro objetivo es ayudar a que recursos, información y apoyo lleguen más rápido a las
-            personas y comunidades afectadas.
-          </p>
+          <p>{t('about.p1')}</p>
+          <p>{t('about.p2')}</p>
         </section>
 
         <section className="about__section">
-          <h2 className="about__h2">¿Cómo funciona?</h2>
+          <h2 className="about__h2">{t('about.how')}</h2>
           <ol className="about__steps">
-            {HOW_STEPS.map((step, i) => (
+            {steps.map((step, i) => (
               <li key={i} className="about__step">
                 <span className="about__step-num">{i + 1}</span>
                 <span>{step}</span>
@@ -62,12 +45,12 @@ export default function AboutPage({ onReport }) {
         </section>
 
         <section className="about__section">
-          <h2 className="about__h2">Tipos de puntos</h2>
+          <h2 className="about__h2">{t('about.types')}</h2>
           <div className="about__types">
-            {POINT_TYPES.map((t) => (
-              <div key={t.label} className="about__type">
-                <span className="about__type-icon"><Icon name={t.icon} size={20} /></span>
-                <span>{t.label}</span>
+            {POINT_TYPES.map((pt) => (
+              <div key={pt.icon} className="about__type">
+                <span className="about__type-icon"><Icon name={pt.icon} size={20} /></span>
+                <span>{lang === 'en' ? pt.en : pt.es}</span>
               </div>
             ))}
           </div>
