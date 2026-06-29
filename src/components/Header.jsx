@@ -33,19 +33,25 @@ export default function Header({
     setMenuOpen(false)
   }
 
+  // En pantallas pequeñas el logo abre/cierra el menú; en escritorio va al inicio.
+  function handleBrand() {
+    const isMobile = typeof window !== 'undefined' && window.matchMedia('(max-width: 940px)').matches
+    if (isMobile) {
+      setMenuOpen((v) => !v)
+    } else {
+      go('map')
+    }
+  }
+
   return (
     <header className="nav">
       <div className="nav__inner">
         <button
-          className="nav__hamburger"
-          onClick={() => setMenuOpen((v) => !v)}
-          aria-label={menuOpen ? t('nav.closeMenu') : t('nav.openMenu')}
+          className={'nav__brand' + (menuOpen ? ' nav__brand--open' : '')}
+          onClick={handleBrand}
+          aria-label={t('nav.home')}
           aria-expanded={menuOpen}
         >
-          <Icon name={menuOpen ? 'close' : 'menu'} size={22} />
-        </button>
-
-        <button className="nav__brand" onClick={() => go('map')} aria-label={t('nav.home')}>
           <span className="nav__logo">
             <span className="nav__logo-bar nav__logo-bar--y" />
             <span className="nav__logo-bar nav__logo-bar--b" />
@@ -55,6 +61,7 @@ export default function Header({
             <span className="nav__title">Una Mano</span>
             <span className="nav__subtitle">{t('nav.subtitle')}</span>
           </span>
+          <Icon name="chevron" size={16} className="nav__brand-caret" />
         </button>
 
         <nav className="nav__links" aria-label={t('nav.mainNav')}>

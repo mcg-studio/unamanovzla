@@ -810,6 +810,9 @@ a { color: var(--accent); }
 .nav__brand-text { display: flex; flex-direction: column; line-height: 1.1; text-align: left; }
 .nav__title { font-size: 16px; font-weight: 800; letter-spacing: -0.01em; }
 .nav__subtitle { font-size: 11px; color: var(--muted); }
+/* Indicador de menú: solo visible en móvil donde el logo abre el menú */
+.nav__brand-caret { display: none; color: var(--muted); transition: transform 0.15s ease; }
+.nav__brand--open .nav__brand-caret { transform: rotate(180deg); }
 
 .nav__links {
   display: flex;
@@ -868,24 +871,12 @@ a { color: var(--accent); }
 }
 .nav__lang:hover { background: #f1f5f9; }
 
-.nav__hamburger {
-  display: none;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: #fff;
-  color: var(--text);
-}
-
 .nav__drawer { display: none; }
 
 @media (max-width: 940px) {
   .nav__links { display: none; }
   .nav__admin-link span { display: none; }
-  .nav__hamburger { display: inline-flex; }
+  .nav__brand-caret { display: inline-flex; }
   .nav__admin { display: none; }
   .nav__drawer {
     display: flex;
@@ -920,7 +911,6 @@ a { color: var(--accent); }
   .nav__brand-text { min-width: 0; }
   .nav__title { font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .nav__subtitle { display: none; }
-  .nav__hamburger { width: 36px; height: 36px; flex: none; }
   .nav__actions { gap: 6px; }
   .nav__lang { padding: 7px 8px; }
 }
