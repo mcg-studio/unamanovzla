@@ -33,6 +33,7 @@ export default function App() {
   const [showAdmins, setShowAdmins] = useState(false)
   const [filterState, setFilterState] = useState('all')
   const [filterKind, setFilterKind] = useState('all')
+  const [filtersOpen, setFiltersOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [focus, setFocus] = useState(null)
   const [placedPoint, setPlacedPoint] = useState(null)
@@ -147,7 +148,20 @@ export default function App() {
 
           <div className="toolbar">
             <SearchBox value={query} onChange={setQuery} locations={locations} onPickLocation={handlePickLocation} />
-            <div className="filters">
+            <button
+              type="button"
+              className={'filters__toggle' + (filtersOpen ? ' filters__toggle--open' : '')}
+              onClick={() => setFiltersOpen((o) => !o)}
+              aria-expanded={filtersOpen}
+            >
+              <Icon name="list" size={16} />
+              <span>Filtros</span>
+              {(filterState !== 'all' || filterKind !== 'all') && (
+                <span className="filters__count">{(filterState !== 'all' ? 1 : 0) + (filterKind !== 'all' ? 1 : 0)}</span>
+              )}
+              <Icon name="chevron" size={16} className="filters__toggle-caret" />
+            </button>
+            <div className={'filters' + (filtersOpen ? ' filters--open' : '')}>
               <div className="filters__group">
                 <span className="filters__label">Lugar</span>
                 <div className="filters__chips">
