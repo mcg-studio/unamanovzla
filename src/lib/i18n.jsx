@@ -43,8 +43,8 @@ const DICT = {
     'dir.empty': 'No se encontraron puntos con esos filtros.',
 
     'about.title': '¿Qué es Una Mano?',
-    'about.subtitle': 'Una plataforma colaborativa para coordinar ayuda durante emergencias en Venezuela.',
-    'about.p1': 'Una Mano conecta a personas, organizaciones y comunidades durante situaciones de emergencia en Venezuela.',
+    'about.subtitle': 'Conectamos las donaciones con los lugares que más las necesitan durante emergencias en Venezuela.',
+    'about.p1': 'Una Mano existe para una sola cosa: que tu donación llegue al lugar donde más hace falta. Conectamos a donantes con hospitales, refugios y centros de acopio según lo que cada lugar necesita en este momento.',
     'about.p2': 'Aquí puedes encontrar hospitales, centros de acopio, refugios y otros puntos de apoyo que necesitan recursos o están brindando ayuda.',
     'about.p3': 'Nuestro objetivo es que la información llegue más rápido, que las donaciones lleguen al lugar correcto y que las comunidades puedan coordinarse de forma más efectiva cuando más lo necesitan.',
     'about.p4': 'La información publicada es revisada por administradores y actualizada por la comunidad para mantener el mapa lo más útil y confiable posible.',
@@ -193,8 +193,8 @@ const DICT = {
     'dir.empty': 'No points found with those filters.',
 
     'about.title': 'What is Una Mano?',
-    'about.subtitle': 'A collaborative platform to coordinate aid during emergencies in Venezuela.',
-    'about.p1': 'Una Mano connects people, organizations and communities during emergencies in Venezuela.',
+    'about.subtitle': 'We route donations to the places that need them most during emergencies in Venezuela.',
+    'about.p1': 'Una Mano exists for one thing: to get your donation to the place where it is needed most. We connect donors with hospitals, shelters and collection centers based on what each place needs right now.',
     'about.p2': 'Here you can find hospitals, collection centers, shelters and other support points that need resources or are providing aid.',
     'about.p3': 'Our goal is for information to arrive faster, for donations to reach the right place, and for communities to coordinate more effectively when they need it most.',
     'about.p4': 'Published information is reviewed by administrators and updated by the community to keep the map as useful and reliable as possible.',
