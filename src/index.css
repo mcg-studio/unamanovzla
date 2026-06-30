@@ -1211,27 +1211,41 @@ a { color: var(--accent); }
    ACERCA DE
    ========================================================================== */
 .about { max-width: 760px; margin: 0 auto; padding: 32px 18px 64px; }
-.about__hero { text-align: center; margin-bottom: 26px; }
-.about__flag { display: inline-flex; gap: 4px; margin-bottom: 14px; }
-.about__flag span { width: 22px; height: 7px; border-radius: 2px; }
-.about__flag span:nth-child(1) { background: var(--ve-yellow); }
-.about__flag span:nth-child(2) { background: var(--ve-blue); }
-.about__flag span:nth-child(3) { background: var(--ve-red); }
-  .about__badge {
-    display: inline-block; margin-bottom: 12px;
-    background: #fef2f2; color: var(--brand); border: 1px solid #fecaca;
-    border-radius: 999px; padding: 4px 12px; font-size: 12px; font-weight: 800;
-    letter-spacing: 0.01em;
-  }
-  .about__quake {
-    display: flex; align-items: flex-start; gap: 8px;
-    max-width: 760px; margin: 0 0 24px;
-    background: #fffbeb; border: 1px solid #fde68a; color: #854d0e;
-    border-radius: 12px; padding: 12px 14px; font-size: 14px; line-height: 1.5;
-  }
-  .about__quake svg { flex: none; margin-top: 2px; }
-  .about__title { margin: 0; font-size: clamp(26px, 5vw, 36px); font-weight: 800; letter-spacing: -0.02em; text-wrap: balance; }
-.about__subtitle { margin: 12px auto 0; color: var(--muted); font-size: 17px; line-height: 1.5; max-width: 52ch; text-wrap: pretty; }
+.about__hero {
+  position: relative; text-align: center; margin-bottom: 30px;
+  padding: 40px 24px 24px; overflow: hidden;
+  background: #fff; border: 1px solid var(--border);
+  border-radius: 20px; box-shadow: var(--shadow-sm);
+}
+.about__hero::before {
+  content: ""; position: absolute; inset: 0 0 auto 0; height: 5px;
+  background: linear-gradient(90deg,
+    var(--ve-yellow) 0 33.33%, var(--ve-blue) 33.33% 66.66%, var(--ve-red) 66.66% 100%);
+}
+.about__badge {
+  display: inline-flex; align-items: center; gap: 7px; margin-bottom: 16px;
+  background: #fef2f2; color: var(--brand); border: 1px solid #fecaca;
+  border-radius: 999px; padding: 5px 13px 5px 11px; font-size: 12px; font-weight: 800;
+  letter-spacing: 0.02em; text-transform: uppercase;
+}
+.about__badge-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--brand); flex: none;
+  box-shadow: 0 0 0 0 rgba(185,28,28,0.5); animation: aboutpulse 2s infinite;
+}
+@keyframes aboutpulse {
+  0% { box-shadow: 0 0 0 0 rgba(185,28,28,0.45); }
+  70% { box-shadow: 0 0 0 6px rgba(185,28,28,0); }
+  100% { box-shadow: 0 0 0 0 rgba(185,28,28,0); }
+}
+.about__title { margin: 0; font-size: clamp(28px, 5vw, 38px); font-weight: 800; letter-spacing: -0.02em; text-wrap: balance; }
+.about__subtitle { margin: 12px auto 0; color: var(--muted); font-size: 17px; line-height: 1.5; max-width: 48ch; text-wrap: pretty; }
+.about__quake {
+  display: flex; align-items: center; gap: 10px; text-align: left;
+  margin: 22px auto 0; max-width: 560px;
+  background: #fffbeb; border: 1px solid #fde68a; color: #854d0e;
+  border-radius: 14px; padding: 13px 16px; font-size: 13.5px; line-height: 1.5; font-weight: 500;
+}
+.about__quake svg { flex: none; color: #d97706; }
 .about__body p { font-size: 16px; line-height: 1.65; color: #334155; margin: 0 0 16px; }
 .about__section { margin-top: 30px; }
 .about__h2 { font-size: 20px; font-weight: 800; letter-spacing: -0.01em; margin: 0 0 14px; }
