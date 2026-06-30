@@ -148,27 +148,36 @@ export default function App() {
           <div className="toolbar">
             <SearchBox value={query} onChange={setQuery} locations={locations} onPickLocation={handlePickLocation} />
             <div className="filters">
-              <button className={'chip' + (filterState === 'all' ? ' chip--active' : '')} onClick={() => setFilterState('all')}>
-                Todos los estados
-              </button>
-              {STATES.map((s) => (
-                <button key={s} className={'chip' + (filterState === s ? ' chip--active' : '')} onClick={() => setFilterState(s)}>
-                  {s}
-                </button>
-              ))}
-              <span style={{ width: 8 }} />
-              <button className={'chip' + (filterKind === 'all' ? ' chip--active' : '')} onClick={() => setFilterKind('all')}>
-                Todo
-              </button>
-              <button className={'chip' + (filterKind === 'parroquia' ? ' chip--active' : '')} onClick={() => setFilterKind('parroquia')}>
-                Parroquias
-              </button>
-              <button className={'chip' + (filterKind === 'hospital' ? ' chip--active' : '')} onClick={() => setFilterKind('hospital')}>
-                Hospitales
-              </button>
-              <button className={'chip' + (filterKind === 'otro' ? ' chip--active' : '')} onClick={() => setFilterKind('otro')}>
-                Otros puntos
-              </button>
+              <div className="filters__group">
+                <span className="filters__label">Lugar</span>
+                <div className="filters__chips">
+                  <button className={'chip' + (filterState === 'all' ? ' chip--active' : '')} onClick={() => setFilterState('all')}>
+                    Todos los estados
+                  </button>
+                  {STATES.map((s) => (
+                    <button key={s} className={'chip' + (filterState === s ? ' chip--active' : '')} onClick={() => setFilterState(s)}>
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="filters__group">
+                <span className="filters__label">Tipo de punto de ayuda</span>
+                <div className="filters__chips">
+                  <button className={'chip' + (filterKind === 'all' ? ' chip--active' : '')} onClick={() => setFilterKind('all')}>
+                    Todo
+                  </button>
+                  <button className={'chip' + (filterKind === 'parroquia' ? ' chip--active' : '')} onClick={() => setFilterKind('parroquia')}>
+                    Parroquias
+                  </button>
+                  <button className={'chip' + (filterKind === 'hospital' ? ' chip--active' : '')} onClick={() => setFilterKind('hospital')}>
+                    Hospitales
+                  </button>
+                  <button className={'chip' + (filterKind === 'otro' ? ' chip--active' : '')} onClick={() => setFilterKind('otro')}>
+                    Otros puntos
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
 
