@@ -19,6 +19,31 @@ const TYPE_CARDS = [
 
 const PEOPLE_RANGES = ['1-10', '10-50', '50-100', '100+']
 
+// Desglose de la poblacion atendida (conteos rapidos con steppers).
+const POP_GROUPS = [
+  { key: 'ninos', label: 'Niños' },
+  { key: 'adultos', label: 'Adultos' },
+  { key: 'mayores', label: 'Adultos mayores' },
+  { key: 'discapacidad', label: 'Discapacidad / movilidad reducida' },
+]
+
+// Tipo de apoyo necesario (seleccion multiple).
+const SUPPORT_TYPES = ['Donaciones físicas', 'Voluntarios', 'Transporte', 'Servicios médicos', 'Rescate', 'Otro']
+
+// Stepper accesible para conteos rapidos sin escribir.
+function Stepper({ label, value, onChange }) {
+  return (
+    <div className="stepper">
+      <span className="stepper__label">{label}</span>
+      <div className="stepper__controls">
+        <button type="button" className="stepper__btn" onClick={() => onChange(Math.max(0, value - 1))} aria-label={'Menos ' + label} disabled={value <= 0}>−</button>
+        <span className="stepper__value" aria-live="polite">{value}</span>
+        <button type="button" className="stepper__btn" onClick={() => onChange(value + 1)} aria-label={'Más ' + label}>+</button>
+      </div>
+    </div>
+  )
+}
+
 // Geocodificacion inversa best-effort con Nominatim para sugerir estado y
 // municipio a partir del pin. Nunca bloquea el flujo si falla.
 async function reverseGeocode(lat, lng) {
@@ -52,19 +77,33 @@ export default function NewLocationForm({ placedPoint, onRemark, onClose, onSent
     summary: '',
     supplies: [],
     suppliesOther: '',
+    // Poblacion atendida (estructurada)
     peopleRange: '',
     peopleExact: '',
+    breakdown: { ninos: 0, adultos: 0, mayores: 0, discapacidad: 0 },
+    // Tipo de apoyo
+    supportTypes: [],
+    // Sangre (hospitales)
     blood_needed: false,
     blood_types: '',
-    donation_poc: '',
+    // Entrega de donaciones (obligatorio)
+    deliveryAddress: '',
+    deliveryRecipient: '',
+    deliveryPhone: '',
+    deliveryHours: '',
+    // Capacidad (refugios)
+    canReceiveMore: '', // '' | 'si' | 'no'
+    // Quien reporta
+    isOnSiteContact: 'si', // 'si' | 'no'
     submitter_name: '',
     submitter_contact: '',
   })
   const [stateConfirmed, setStateConfirmed] = useState(false)
   const [locating, setLocating] = useState(false)
   const [geoMsg, setGeoMsg] = useState('')
-  const [showMore, setShowMore] = useState(false)
+  const [showOptional, setShowOptional] = useState(false)
   const [stepError, setStepError] = useState('')
+  const [triedSubmit, setTriedSubmit] = useState(false)
   const [status, setStatus] = useState({ sending: false, ok: false, error: '' })
   const [hp, setHp] = useState('') // honeypot anti-spam
 
@@ -72,8 +111,15 @@ export default function NewLocationForm({ placedPoint, onRemark, onClose, onSent
   const [photo, setPhoto] = useState(null) // { url, name }
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }))
+  const setBreakdown = (key, v) => setForm((f) => ({ ...f, breakdown: { ...f.breakdown, [key]: v } }))
   const selectedCard = TYPE_CARDS.find((c) => c.id === form.typeId) || TYPE_CARDS[0]
   const isHospital = selectedCard.kind === 'hospital'
+  const isShelter = form.typeId === 'refugio' || form.typeId === 'acopio'
+
+  // Validacion de los campos obligatorios de entrega.
+  const deliveryComplete =
+    form.deliveryAddress.trim() && form.deliveryRecipient.trim() && form.deliveryPhone.trim()
+  const canSubmit = Boolean(form.name.trim() && placedPoint && deliveryComplete)
 
   // Cuando llega un punto nuevo (GPS o toque en el mapa), intenta derivar
   // estado/municipio automaticamente.
@@ -127,6 +173,13 @@ export default function NewLocationForm({ placedPoint, onRemark, onClose, onSent
     }))
   }
 
+  function toggleSupport(chip) {
+    setForm((f) => ({
+      ...f,
+      supportTypes: f.supportTypes.includes(chip) ? f.supportTypes.filter((s) => s !== chip) : [...f.supportTypes, chip],
+    }))
+  }
+
   function onPhoto(e) {
     const file = e.target.files?.[0]
     if (file) setPhoto({ url: URL.createObjectURL(file), name: file.name })
@@ -154,12 +207,29 @@ export default function NewLocationForm({ placedPoint, onRemark, onClose, onSent
     if (hp.trim()) { setStatus({ sending: false, ok: true, error: '' }); return }
     if (!form.name.trim()) { setStep(3); return setStepError('Indica el nombre del lugar.') }
     if (!placedPoint) { setStep(1); return setStepError('Marca la ubicación en el mapa.') }
+    if (!deliveryComplete) {
+      setTriedSubmit(true)
+      setStepError('Completa los datos obligatorios de entrega de donaciones.')
+      return
+    }
     setStatus({ sending: true, ok: false, error: '' })
 
     const supplies = [...form.supplies.filter((s) => s !== 'Otro')]
     if (form.supplies.includes('Otro') && form.suppliesOther.trim()) supplies.push(form.suppliesOther.trim())
     const suppliesText = supplies.join(', ')
-    const peopleText = form.peopleExact.trim() || form.peopleRange
+
+    // Poblacion atendida estructurada: total + desglose.
+    const totalText = form.peopleExact.trim() || form.peopleRange
+    const breakdownText = POP_GROUPS
+      .filter((g) => form.breakdown[g.key] > 0)
+      .map((g) => `${g.label}: ${form.breakdown[g.key]}`)
+      .join(', ')
+    const peopleText = [totalText, breakdownText].filter(Boolean).join(breakdownText ? ' — ' : '')
+
+    // Entrega de donaciones (obligatorio).
+    const deliveryParts = [form.deliveryRecipient.trim(), form.deliveryPhone.trim(), form.deliveryAddress.trim()]
+    if (form.deliveryHours.trim()) deliveryParts.push('Horario: ' + form.deliveryHours.trim())
+    const donationPoc = deliveryParts.filter(Boolean).join(' · ')
 
     const proposed = {
       name: form.name.trim(),
@@ -168,24 +238,36 @@ export default function NewLocationForm({ placedPoint, onRemark, onClose, onSent
       municipio: form.municipio.trim() || null,
       lat: placedPoint.lat,
       lng: placedPoint.lng,
+      donation_poc: donationPoc,
     }
     if (form.summary.trim()) proposed.summary = form.summary.trim()
     if (suppliesText) proposed.supplies_needed = suppliesText
-    if (form.donation_poc.trim()) proposed.donation_poc = form.donation_poc.trim()
+    if (peopleText) proposed.people_aided = peopleText
     if (isHospital) {
-      if (peopleText) proposed.people_aided = peopleText
       if (form.blood_needed) proposed.blood_needed = true
       if (form.blood_types.trim()) proposed.blood_types = form.blood_types.trim()
     }
-    // Conserva el subtipo y el modo (necesita/ofrece) en la descripcion.
+
+    // Conserva subtipo, modo, apoyo y capacidad en la descripcion.
     const modeLabel = form.helpMode === 'offers' ? 'Ofrece ayuda' : 'Necesita ayuda'
-    proposed.description = `${selectedCard.label} · ${modeLabel}`
+    let description = `${selectedCard.label} · ${modeLabel}`
+    if (form.supportTypes.length) description += ` · Apoyo: ${form.supportTypes.join(', ')}`
+    if (isShelter && form.canReceiveMore) {
+      description += ` · Puede recibir más personas: ${form.canReceiveMore === 'si' ? 'Sí' : 'No'}`
+    }
+    proposed.description = description
+
+    // Quien reporta (solo si NO es la persona de contacto del lugar).
+    const reporterName = form.isOnSiteContact === 'no' ? form.submitter_name.trim() : ''
+    const reporterContact = form.isOnSiteContact === 'no' ? form.submitter_contact.trim() : ''
 
     const mediaNote = photo ? ' (incluye foto)' : ''
     const message =
       `[${selectedCard.label} · ${modeLabel}] ` +
       (form.summary.trim() || `Propuesta de nuevo punto: ${form.name.trim()}`) +
       (suppliesText ? ` — Necesita: ${suppliesText}` : '') +
+      (form.supportTypes.length ? ` — Apoyo: ${form.supportTypes.join(', ')}` : '') +
+      ` — Entrega: ${donationPoc}` +
       mediaNote
 
     try {
@@ -196,8 +278,8 @@ export default function NewLocationForm({ placedPoint, onRemark, onClose, onSent
         new_location: true,
         update_type: 'nuevo_punto',
         message,
-        submitter_name: form.submitter_name.trim() || null,
-        submitter_contact: form.submitter_contact.trim() || null,
+        submitter_name: reporterName || null,
+        submitter_contact: reporterContact || null,
         proposed,
       })
       setStatus({ sending: false, ok: true, error: '' })
@@ -356,30 +438,6 @@ export default function NewLocationForm({ placedPoint, onRemark, onClose, onSent
 
             {isHospital && (
               <>
-                <label className="wizard__flabel">Personas siendo atendidas</label>
-                <div className="range-row">
-                  {PEOPLE_RANGES.map((r) => (
-                    <button
-                      type="button"
-                      key={r}
-                      className={'range-btn' + (form.peopleRange === r && !form.peopleExact ? ' range-btn--active' : '')}
-                      onClick={() => { set('peopleRange', r); set('peopleExact', '') }}
-                      aria-pressed={form.peopleRange === r && !form.peopleExact}
-                    >
-                      {r}
-                    </button>
-                  ))}
-                </div>
-                <input
-                  type="number"
-                  inputMode="numeric"
-                  min="0"
-                  style={{ marginTop: 8 }}
-                  value={form.peopleExact}
-                  onChange={(e) => { set('peopleExact', e.target.value); set('peopleRange', '') }}
-                  placeholder="O ingresa un número exacto"
-                />
-
                 <label className="wizard__check">
                   <input type="checkbox" checked={form.blood_needed} onChange={(e) => set('blood_needed', e.target.checked)} />
                   <span>Se necesitan donaciones de sangre</span>
@@ -395,38 +453,178 @@ export default function NewLocationForm({ placedPoint, onRemark, onClose, onSent
         {/* ----- Paso 4: Detalles ----- */}
         {step === 4 && (
           <div className="wizard__pane">
-            <div className="media-actions">
-              <label className="media-btn">
-                <Icon name="camera" size={18} /> {photo ? 'Cambiar foto' : 'Agregar foto'}
-                <input type="file" accept="image/*" capture="environment" onChange={onPhoto} hidden />
-              </label>
-              {photo && (
-                <div className="media-preview">
-                  <img src={photo.url || "/placeholder.svg"} alt="Vista previa" className="photo-thumb" />
-                  <button type="button" className="iconbtn" onClick={() => setPhoto(null)} aria-label="Eliminar foto">
-                    <Icon name="trash" size={16} />
+            {/* Poblacion atendida */}
+            <section className="fsection">
+              <h3 className="fsection__title">Población atendida</h3>
+              <label className="wizard__flabel">Total de personas</label>
+              <div className="range-row">
+                {PEOPLE_RANGES.map((r) => (
+                  <button
+                    type="button"
+                    key={r}
+                    className={'range-btn' + (form.peopleRange === r && !form.peopleExact ? ' range-btn--active' : '')}
+                    onClick={() => { set('peopleRange', r); set('peopleExact', '') }}
+                    aria-pressed={form.peopleRange === r && !form.peopleExact}
+                  >
+                    {r}
+                  </button>
+                ))}
+              </div>
+              <input
+                type="number"
+                inputMode="numeric"
+                min="0"
+                style={{ marginTop: 8 }}
+                value={form.peopleExact}
+                onChange={(e) => { set('peopleExact', e.target.value); set('peopleRange', '') }}
+                placeholder="O ingresa un número exacto"
+              />
+
+              <label className="wizard__flabel">Desglose (opcional)</label>
+              <div className="stepper-grid">
+                {POP_GROUPS.map((g) => (
+                  <Stepper key={g.key} label={g.label} value={form.breakdown[g.key]} onChange={(v) => setBreakdown(g.key, v)} />
+                ))}
+              </div>
+            </section>
+
+            {/* Tipo de apoyo necesario */}
+            <section className="fsection">
+              <h3 className="fsection__title">Tipo de apoyo necesario</h3>
+              <div className="chip-grid">
+                {SUPPORT_TYPES.map((s) => (
+                  <button
+                    type="button"
+                    key={s}
+                    className={'chip-select' + (form.supportTypes.includes(s) ? ' chip-select--active' : '')}
+                    onClick={() => toggleSupport(s)}
+                    aria-pressed={form.supportTypes.includes(s)}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </section>
+
+            {/* Entrega de donaciones (OBLIGATORIO) */}
+            <section className="fsection fsection--req">
+              <h3 className="fsection__title">
+                Entrega de donaciones
+                <span className="req-badge">Obligatorio</span>
+              </h3>
+              <p className="fsection__hint">¿A dónde y a quién deben llegar las donaciones?</p>
+
+              <label className="wizard__flabel">Dirección o punto de entrega *</label>
+              <input
+                className={triedSubmit && !form.deliveryAddress.trim() ? 'input--err' : ''}
+                value={form.deliveryAddress}
+                onChange={(e) => set('deliveryAddress', e.target.value)}
+                placeholder="Ej: Av. Bolívar, frente a la plaza"
+              />
+              {triedSubmit && !form.deliveryAddress.trim() && <span className="field-err">Indica el punto de entrega.</span>}
+
+              <label className="wizard__flabel">Nombre de quién recibe / a quién buscar *</label>
+              <input
+                className={triedSubmit && !form.deliveryRecipient.trim() ? 'input--err' : ''}
+                value={form.deliveryRecipient}
+                onChange={(e) => set('deliveryRecipient', e.target.value)}
+                placeholder="Ej: Sra. María, coordinadora del refugio"
+              />
+              {triedSubmit && !form.deliveryRecipient.trim() && <span className="field-err">Indica a quién buscar.</span>}
+
+              <label className="wizard__flabel">Teléfono de contacto *</label>
+              <input
+                type="tel"
+                inputMode="tel"
+                className={triedSubmit && !form.deliveryPhone.trim() ? 'input--err' : ''}
+                value={form.deliveryPhone}
+                onChange={(e) => set('deliveryPhone', e.target.value)}
+                placeholder="Ej: 0412-1234567"
+              />
+              {triedSubmit && !form.deliveryPhone.trim() && <span className="field-err">Indica un teléfono de contacto.</span>}
+
+              <label className="wizard__flabel">Horario de recepción</label>
+              <input
+                value={form.deliveryHours}
+                onChange={(e) => set('deliveryHours', e.target.value)}
+                placeholder="Ej: 8am - 5pm"
+              />
+            </section>
+
+            {/* Capacidad (refugios y centros de acopio) */}
+            {isShelter && (
+              <section className="fsection">
+                <h3 className="fsection__title">Capacidad</h3>
+                <label className="wizard__flabel">¿Pueden recibir más personas?</label>
+                <div className="seg-toggle" role="group" aria-label="Capacidad para recibir más personas">
+                  <button
+                    type="button"
+                    className={'seg-toggle__btn' + (form.canReceiveMore === 'si' ? ' seg-toggle__btn--active' : '')}
+                    onClick={() => set('canReceiveMore', 'si')}
+                  >
+                    Sí
+                  </button>
+                  <button
+                    type="button"
+                    className={'seg-toggle__btn' + (form.canReceiveMore === 'no' ? ' seg-toggle__btn--active' : '')}
+                    onClick={() => set('canReceiveMore', 'no')}
+                  >
+                    No
                   </button>
                 </div>
-              )}
-            </div>
+              </section>
+            )}
 
-            <label className="wizard__flabel">Resumen de la situación (opcional)</label>
-            <textarea value={form.summary} onChange={(e) => set('summary', e.target.value)} placeholder="Describe qué está pasando en este punto…" />
-
-            <button type="button" className="more-toggle" onClick={() => setShowMore((v) => !v)} aria-expanded={showMore}>
-              <Icon name="chevron" size={16} className={showMore ? 'more-toggle__chev more-toggle__chev--open' : 'more-toggle__chev'} />
-              Agregar más detalles (opcional)
+            {/* Detalles opcionales (resumen, foto, quien reporta) */}
+            <button type="button" className="more-toggle" onClick={() => setShowOptional((v) => !v)} aria-expanded={showOptional}>
+              <Icon name="chevron" size={16} className={showOptional ? 'more-toggle__chev more-toggle__chev--open' : 'more-toggle__chev'} />
+              Detalles opcionales
             </button>
-            {showMore && (
+            {showOptional && (
               <div className="more-section">
-                <label className="wizard__flabel">Municipio / parroquia</label>
-                <input value={form.municipio} onChange={(e) => set('municipio', e.target.value)} />
-                <label className="wizard__flabel">Punto de entrega de donaciones</label>
-                <input value={form.donation_poc} onChange={(e) => set('donation_poc', e.target.value)} placeholder="Nombre, teléfono o dirección de quien recibe" />
-                <label className="wizard__flabel">Tu nombre</label>
-                <input value={form.submitter_name} onChange={(e) => set('submitter_name', e.target.value)} />
-                <label className="wizard__flabel">Tu contacto</label>
-                <input value={form.submitter_contact} onChange={(e) => set('submitter_contact', e.target.value)} placeholder="Teléfono o correo" />
+                <label className="wizard__flabel">Resumen de la situación</label>
+                <textarea value={form.summary} onChange={(e) => set('summary', e.target.value)} placeholder="Describe qué está pasando en este punto…" />
+
+                <div className="media-actions">
+                  <label className="media-btn">
+                    <Icon name="camera" size={18} /> {photo ? 'Cambiar foto' : 'Agregar foto'}
+                    <input type="file" accept="image/*" capture="environment" onChange={onPhoto} hidden />
+                  </label>
+                  {photo && (
+                    <div className="media-preview">
+                      <img src={photo.url || "/placeholder.svg"} alt="Vista previa" className="photo-thumb" />
+                      <button type="button" className="iconbtn" onClick={() => setPhoto(null)} aria-label="Eliminar foto">
+                        <Icon name="trash" size={16} />
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                <label className="wizard__flabel">¿Eres la persona de contacto en el lugar?</label>
+                <div className="seg-toggle" role="group" aria-label="¿Eres la persona de contacto?">
+                  <button
+                    type="button"
+                    className={'seg-toggle__btn' + (form.isOnSiteContact === 'si' ? ' seg-toggle__btn--active' : '')}
+                    onClick={() => set('isOnSiteContact', 'si')}
+                  >
+                    Sí
+                  </button>
+                  <button
+                    type="button"
+                    className={'seg-toggle__btn' + (form.isOnSiteContact === 'no' ? ' seg-toggle__btn--active' : '')}
+                    onClick={() => set('isOnSiteContact', 'no')}
+                  >
+                    No
+                  </button>
+                </div>
+                {form.isOnSiteContact === 'no' && (
+                  <>
+                    <label className="wizard__flabel">Tu nombre</label>
+                    <input value={form.submitter_name} onChange={(e) => set('submitter_name', e.target.value)} />
+                    <label className="wizard__flabel">Tu contacto</label>
+                    <input value={form.submitter_contact} onChange={(e) => set('submitter_contact', e.target.value)} placeholder="Teléfono o correo" />
+                  </>
+                )}
               </div>
             )}
 
@@ -453,7 +651,7 @@ export default function NewLocationForm({ placedPoint, onRemark, onClose, onSent
             Siguiente <Icon name="arrowRight" size={16} />
           </button>
         ) : (
-          <button type="button" className="btn btn--primary wizard__next" onClick={submit} disabled={status.sending}>
+          <button type="button" className="btn btn--primary wizard__next" onClick={submit} disabled={status.sending || !canSubmit}>
             {status.sending ? 'Enviando…' : 'Enviar punto'}
           </button>
         )}

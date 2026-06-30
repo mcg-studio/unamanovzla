@@ -68,6 +68,9 @@ export default function UpdatesFeed({ locations = [], onClose, onPickLocation })
       </div>
 
       <div className="feed__filters">
+        <div className="feed__filterlabel">
+          <Icon name="list" size={13} /> Filtrar actualizaciones
+        </div>
         <div className="feed__filterrow">
           <button className={'chip' + (fState === 'all' ? ' chip--active' : '')} onClick={() => setFState('all')}>Todos</button>
           {STATES.map((s) => (
@@ -90,7 +93,32 @@ export default function UpdatesFeed({ locations = [], onClose, onPickLocation })
 
       <div className="feed__body">
         {items.length === 0 && (
-          <div className="empty-state">No hay actualizaciones que coincidan con el filtro.</div>
+          <div className="feed__empty">
+            <span className="feed__empty-icon"><Icon name="clock" size={26} /></span>
+            <h3 className="feed__empty-title">No hay actualizaciones que coincidan</h3>
+            <p className="feed__empty-text">
+              Ajusta los filtros de arriba o vuelve más tarde. Aquí aparecen los cambios
+              recientes en cada punto. Por ejemplo:
+            </p>
+            <ul className="feed__examples">
+              <li className="feed__example">
+                <span className="tag tag--rescate"><Icon name="rescue" size={12} /> Rescate</span>
+                <span>Equipos trabajando en un edificio colapsado</span>
+              </li>
+              <li className="feed__example">
+                <span className="tag tag--atencion"><Icon name="medical" size={12} /> Atención</span>
+                <span>Un hospital reporta cuántas personas atiende</span>
+              </li>
+              <li className="feed__example">
+                <span className="tag tag--sangre"><Icon name="blood" size={12} /> Sangre</span>
+                <span>Solicitud urgente de donantes O-</span>
+              </li>
+              <li className="feed__example">
+                <span className="tag tag--suministros"><Icon name="box" size={12} /> Suministros</span>
+                <span>Un refugio necesita agua y colchones</span>
+              </li>
+            </ul>
+          </div>
         )}
         {items.map(({ l, tags }) => {
           const level = STATUS_LEVELS[l.status_level] || STATUS_LEVELS.sin_datos

@@ -217,18 +217,18 @@ export default function App() {
         {view === 'about' && (
           <AboutPage onReport={() => navigate('report')} />
         )}
+
+        {view === 'updates' && (
+          <UpdatesFeed
+            locations={locations}
+            onClose={() => setView('map')}
+            onPickLocation={(l) => { setView('map'); handlePickLocation(l) }}
+          />
+        )}
       </div>
 
       {view === 'donate' && (
         <DonateMatcher
-          locations={locations}
-          onClose={() => setView('map')}
-          onPickLocation={(l) => { setView('map'); handlePickLocation(l) }}
-        />
-      )}
-
-      {view === 'updates' && (
-        <UpdatesFeed
           locations={locations}
           onClose={() => setView('map')}
           onPickLocation={(l) => { setView('map'); handlePickLocation(l) }}
