@@ -37,13 +37,27 @@ export default function MapStats({ locations = [] }) {
         </button>
       </div>
       {open && (
-        <div className="mapstats__note">
-          <p className="mapstats__quake">
-            <Icon name="alert" size={14} />
-            <span>{t('quake.context')}</span>
-          </p>
-          <p className="mapstats__disclaimer">{t('disclaimer.text')}</p>
-        </div>
+        <>
+          <button
+            className="mapstats__backdrop"
+            onClick={() => setOpen(false)}
+            aria-label={t('nav.closeMenu')}
+          />
+          <div className="mapstats__note" role="dialog" aria-modal="true">
+            <button
+              className="mapstats__note-close"
+              onClick={() => setOpen(false)}
+              aria-label={t('nav.closeMenu')}
+            >
+              ×
+            </button>
+            <p className="mapstats__quake">
+              <Icon name="alert" size={14} />
+              <span>{t('quake.context')}</span>
+            </p>
+            <p className="mapstats__disclaimer">{t('disclaimer.text')}</p>
+          </div>
+        </>
       )}
     </div>
   )

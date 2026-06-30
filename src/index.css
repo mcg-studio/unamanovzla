@@ -383,11 +383,15 @@ a { color: var(--accent); }
 }
 .mapstats__info--on { background: var(--brand); color: #fff; }
 .mapstats__note {
+  position: relative;
   margin: 8px auto 0; max-width: 360px;
   background: rgba(255,255,255,0.98); border: 1px solid var(--border);
   border-radius: 12px; box-shadow: var(--shadow);
   padding: 10px 12px; font-size: 12px; line-height: 1.45; color: var(--text);
 }
+/* Cierre y fondo: solo visibles cuando el aviso es un overlay (móvil) */
+.mapstats__backdrop { display: none; }
+.mapstats__note-close { display: none; }
 .mapstats__quake {
   display: flex; align-items: flex-start; gap: 6px; margin: 0 0 8px;
   padding-bottom: 8px; border-bottom: 1px solid var(--border);
@@ -451,7 +455,33 @@ a { color: var(--accent); }
   .fab-report {
     bottom: 72px; padding: 12px 16px; font-size: 13px;
   }
+
+  /* El aviso de información se abre como overlay centrado para no
+     chocar con el FAB ni la leyenda en el área inferior */
+  .mapstats__backdrop {
+    display: block; position: fixed; inset: 0; z-index: 1500;
+    background: rgba(15,23,42,0.45); border: none; padding: 0;
+    animation: fadein 0.15s ease-out;
+  }
+  .mapstats__note {
+    position: fixed; z-index: 1600;
+    left: 50%; top: 50%; transform: translate(-50%, -50%);
+    margin: 0; width: min(360px, calc(100% - 32px)); max-width: none;
+    padding: 16px 16px 14px; font-size: 13px; line-height: 1.5;
+    box-shadow: var(--shadow-lg, 0 16px 40px rgba(15,23,42,0.3));
+    animation: popin 0.16s ease-out;
+  }
+  .mapstats__note-close {
+    display: inline-flex; align-items: center; justify-content: center;
+    position: absolute; top: 8px; right: 8px; width: 30px; height: 30px;
+    border-radius: 8px; border: none; background: #f1f5f9; color: var(--muted);
+    font-size: 20px; line-height: 1;
+  }
+  .mapstats__quake { padding-right: 28px; }
 }
+
+@keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popin { from { opacity: 0; transform: translate(-50%, -46%); } to { opacity: 1; transform: translate(-50%, -50%); } }
 
 /* Side panel */
 .panel {
