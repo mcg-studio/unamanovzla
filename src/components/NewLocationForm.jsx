@@ -307,7 +307,7 @@ export default function NewLocationForm({ placedPoint, onRemark, onClose, onSent
   }
 
   return (
-    <aside className="panel">
+    <aside className={'panel' + (step === 1 && !placedPoint ? ' panel--pick' : '')}>
       <div className="panel__head">
         <button className="panel__close" onClick={onClose} aria-label="Cerrar">×</button>
         <h2 className="panel__title">Reportar nuevo punto</h2>
