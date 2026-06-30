@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { repo } from '../lib/repository'
-import { STATES, SUPPLY_CHIPS } from '../data/constants'
+import { STATES, SUPPLY_CHIPS, URGENCY_OPTIONS } from '../data/constants'
 import Icon from './Icons'
 
 const STEPS = ['Ubicación', 'Tipo', 'Necesidades', 'Detalles']
@@ -88,6 +88,7 @@ export default function NewLocationForm({ placedPoint, onRemark, onClose, onSent
     state: STATES[0],
     municipio: '',
     summary: '',
+    gravedad: '', // nivel de gravedad sugerido (mapea a status_level)
     supplies: [],
     suppliesOther: '',
     // Poblacion atendida (estructurada)
@@ -256,6 +257,7 @@ export default function NewLocationForm({ placedPoint, onRemark, onClose, onSent
       donation_poc: donationPoc,
     }
     if (form.summary.trim()) proposed.summary = form.summary.trim()
+    if (form.gravedad) proposed.status_level = form.gravedad
     if (suppliesText) proposed.supplies_needed = suppliesText
     if (peopleText) proposed.people_aided = peopleText
     if (isHospital) {
@@ -427,6 +429,21 @@ export default function NewLocationForm({ placedPoint, onRemark, onClose, onSent
               onChange={(e) => set('name', e.target.value)}
               placeholder="Ej: Hospital de Los Teques, Refugio Escuela Bolívar…"
             />
+
+            <label className="wizard__flabel">Nivel de gravedad</label>
+            <div className="chip-grid">
+              {URGENCY_OPTIONS.map((u) => (
+                <button
+                  type="button"
+                  key={u.value}
+                  className={'chip-select' + (form.gravedad === u.value ? ' chip-select--active' : '')}
+                  onClick={() => set('gravedad', form.gravedad === u.value ? '' : u.value)}
+                  aria-pressed={form.gravedad === u.value}
+                >
+                  {u.label}
+                </button>
+              ))}
+            </div>
 
             <label className="wizard__flabel">{form.helpMode === 'offers' ? 'Recursos disponibles' : 'Suministros necesarios'}</label>
             <div className="chip-grid">
