@@ -29,8 +29,16 @@ export default function AdminQueue({ locations = [], onClose, onApplied }) {
     const init = {}
     for (const s of data) {
       const current = byId[s.location_id]
+      // Prioridad: urgencia sugerida por quien reporta > estado actual > 'alto'.
+      const suggested = s.proposed?.status_level
+      const defaultLevel =
+        suggested && suggested in STATUS_LEVELS && suggested !== 'sin_datos'
+          ? suggested
+          : current?.status_level && current.status_level !== 'sin_datos'
+            ? current.status_level
+            : 'alto'
       init[s.id] = {
-        status_level: current?.status_level && current.status_level !== 'sin_datos' ? current.status_level : 'alto',
+        status_level: defaultLevel,
         blood_needed: !!s.proposed?.blood_needed,
         ...Object.fromEntries(
           Object.entries(s.proposed || {}).filter(([k]) => k in FIELD_LABELS),

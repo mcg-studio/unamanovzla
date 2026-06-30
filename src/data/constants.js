@@ -54,6 +54,17 @@ export const STATES = ['Distrito Capital', 'Miranda', 'La Guaira']
 // Vocabulario compartido de suministros (formulario de reporte y flujo de donar).
 export const SUPPLY_CHIPS = ['Agua', 'Comida', 'Medicinas', 'Sangre', 'Colchones', 'Generadores', 'Transporte', 'Pañales', 'Otro']
 
+// Tipos de sangre estandar (selección estructurada en reportes de hospital).
+export const BLOOD_TYPES = ['O-', 'O+', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+']
+
+// Nivel de urgencia que el público puede sugerir al reportar una actualización.
+export const URGENCY_OPTIONS = [
+  { value: 'critico', label: 'Crítico' },
+  { value: 'alto', label: 'Alto' },
+  { value: 'medio', label: 'Medio' },
+  { value: 'estable', label: 'Estable' },
+]
+
 // Estado inicial (vacio) de una ubicacion antes de cualquier actualizacion.
 export function emptyStatus() {
   return {
