@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { IS_DEMO } from '../lib/repository'
 import { useI18n } from '../lib/i18n'
 import Icon from './Icons'
 
@@ -79,11 +78,6 @@ export default function Header({
         </nav>
 
         <div className="nav__actions">
-          {IS_DEMO && (
-            <span className="badge-demo" title="Sin backend configurado: los datos viven en este navegador.">
-              DEMO
-            </span>
-          )}
           <button
             className="nav__lang"
             onClick={toggle}
