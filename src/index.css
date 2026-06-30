@@ -387,6 +387,13 @@ a { color: var(--accent); }
   border-radius: 12px; box-shadow: var(--shadow);
   padding: 10px 12px; font-size: 12px; line-height: 1.45; color: var(--text);
 }
+.mapstats__quake {
+  display: flex; align-items: flex-start; gap: 6px; margin: 0 0 8px;
+  padding-bottom: 8px; border-bottom: 1px solid var(--border);
+  font-weight: 600; color: #854d0e;
+}
+.mapstats__quake svg { flex: none; margin-top: 1px; color: #b45309; }
+.mapstats__disclaimer { margin: 0; color: var(--muted); }
 
 /* Boton flotante de reporte */
 .fab-report {

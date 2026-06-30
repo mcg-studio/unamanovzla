@@ -37,7 +37,13 @@ export default function MapStats({ locations = [] }) {
         </button>
       </div>
       {open && (
-        <p className="mapstats__note">{t('disclaimer.text')}</p>
+        <div className="mapstats__note">
+          <p className="mapstats__quake">
+            <Icon name="alert" size={14} />
+            <span>{t('quake.context')}</span>
+          </p>
+          <p className="mapstats__disclaimer">{t('disclaimer.text')}</p>
+        </div>
       )}
     </div>
   )
