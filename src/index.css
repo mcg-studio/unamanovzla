@@ -26,6 +26,7 @@
   --ve-red: #cf2030;
 
   --nav-h: 60px;
+  --font-script: 'Dancing Script', 'Brush Script MT', cursive;
   font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
 }
 
@@ -892,7 +893,7 @@ a { color: var(--accent); }
 .nav__logo-bar--b { background: var(--ve-blue); width: 80%; }
 .nav__logo-bar--r { background: var(--ve-red); width: 60%; }
 .nav__brand-text { display: flex; flex-direction: column; line-height: 1.1; text-align: left; }
-.nav__title { font-size: 16px; font-weight: 800; letter-spacing: -0.01em; }
+  .nav__title { font-family: var(--font-script); font-size: 24px; font-weight: 700; line-height: 1; letter-spacing: 0; }
 .nav__subtitle { font-size: 11px; color: var(--muted); }
 /* Indicador de menú: solo visible en móvil donde el logo abre el menú */
 .nav__brand-caret { display: none; color: var(--muted); transition: transform 0.15s ease; }
@@ -993,7 +994,7 @@ a { color: var(--accent); }
   .nav__inner { padding: 0 10px; gap: 8px; }
   .nav__brand { flex: 1; min-width: 0; }
   .nav__brand-text { min-width: 0; }
-  .nav__title { font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .nav__title { font-size: 22px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .nav__subtitle { display: none; }
   .nav__actions { gap: 6px; }
   .nav__lang { padding: 7px 8px; }
@@ -1237,7 +1238,7 @@ a { color: var(--accent); }
   70% { box-shadow: 0 0 0 6px rgba(185,28,28,0); }
   100% { box-shadow: 0 0 0 0 rgba(185,28,28,0); }
 }
-.about__title { margin: 0; font-size: clamp(28px, 5vw, 38px); font-weight: 800; letter-spacing: -0.02em; text-wrap: balance; }
+.about__title { margin: 0; font-family: var(--font-script); font-size: clamp(40px, 7vw, 60px); font-weight: 700; line-height: 1.05; letter-spacing: 0; text-wrap: balance; }
 .about__subtitle { margin: 12px auto 0; color: var(--muted); font-size: 17px; line-height: 1.5; max-width: 48ch; text-wrap: pretty; }
 .about__quake {
   display: flex; align-items: center; gap: 10px; text-align: left;
