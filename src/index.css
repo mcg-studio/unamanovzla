@@ -994,7 +994,8 @@ a { color: var(--accent); }
 
 @media (max-width: 940px) {
   .nav__links { display: none; }
-  .nav__admin-link span { display: none; }
+  /* Admin vive dentro del menú (drawer) en móvil, no en la barra superior */
+  .nav__admin-link { display: none; }
   .nav__brand-caret { display: inline-flex; }
   .nav__admin { display: none; }
   .nav__drawer {
