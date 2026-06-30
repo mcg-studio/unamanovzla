@@ -19,7 +19,7 @@ const TYPE_CARDS = [
 
 const PEOPLE_RANGES = ['1-10', '10-50', '50-100', '100+']
 
-// Desglose de la poblacion atendida (conteos rapidos con steppers).
+// Desglose de la poblacion atendida (presencia con toggles).
 const POP_GROUPS = [
   { key: 'ninos', label: 'Niños' },
   { key: 'adultos', label: 'Adultos' },
@@ -30,17 +30,21 @@ const POP_GROUPS = [
 // Tipo de apoyo necesario (seleccion multiple).
 const SUPPORT_TYPES = ['Donaciones físicas', 'Voluntarios', 'Transporte', 'Servicios médicos', 'Rescate', 'Otro']
 
-// Stepper accesible para conteos rapidos sin escribir.
-function Stepper({ label, value, onChange }) {
+// Toggle accesible para indicar presencia de un grupo.
+function Toggle({ label, checked, onChange }) {
   return (
-    <div className="stepper">
-      <span className="stepper__label">{label}</span>
-      <div className="stepper__controls">
-        <button type="button" className="stepper__btn" onClick={() => onChange(Math.max(0, value - 1))} aria-label={'Menos ' + label} disabled={value <= 0}>−</button>
-        <span className="stepper__value" aria-live="polite">{value}</span>
-        <button type="button" className="stepper__btn" onClick={() => onChange(value + 1)} aria-label={'Más ' + label}>+</button>
-      </div>
-    </div>
+    <button
+      type="button"
+      className={'toggle-row' + (checked ? ' toggle-row--on' : '')}
+      onClick={() => onChange(!checked)}
+      role="switch"
+      aria-checked={checked}
+    >
+      <span className="toggle-row__label">{label}</span>
+      <span className="toggle-row__switch" aria-hidden>
+        <span className="toggle-row__knob" />
+      </span>
+    </button>
   )
 }
 
@@ -89,7 +93,7 @@ export default function NewLocationForm({ placedPoint, onRemark, onClose, onSent
     // Poblacion atendida (estructurada)
     peopleRange: '',
     peopleExact: '',
-    breakdown: { ninos: 0, adultos: 0, mayores: 0, discapacidad: 0 },
+    breakdown: { ninos: false, adultos: false, mayores: false, discapacidad: false },
     // Tipo de apoyo
     supportTypes: [],
     // Sangre (hospitales)
@@ -232,10 +236,10 @@ export default function NewLocationForm({ placedPoint, onRemark, onClose, onSent
     // Poblacion atendida estructurada: total + desglose.
     const totalText = form.peopleExact.trim() || form.peopleRange
     const breakdownText = POP_GROUPS
-      .filter((g) => form.breakdown[g.key] > 0)
-      .map((g) => `${g.label}: ${form.breakdown[g.key]}`)
+      .filter((g) => form.breakdown[g.key])
+      .map((g) => g.label)
       .join(', ')
-    const peopleText = [totalText, breakdownText].filter(Boolean).join(breakdownText ? ' — ' : '')
+    const peopleText = [totalText, breakdownText && `incluye: ${breakdownText}`].filter(Boolean).join(' — ')
 
     // Entrega de donaciones (obligatorio).
     const deliveryParts = [form.deliveryRecipient.trim(), form.deliveryPhone.trim(), form.deliveryAddress.trim()]
@@ -491,10 +495,10 @@ export default function NewLocationForm({ placedPoint, onRemark, onClose, onSent
                 placeholder="O ingresa un número exacto"
               />
 
-              <label className="wizard__flabel">Desglose (opcional)</label>
-              <div className="stepper-grid">
+              <label className="wizard__flabel">¿Quiénes están presentes? (opcional)</label>
+              <div className="toggle-grid">
                 {POP_GROUPS.map((g) => (
-                  <Stepper key={g.key} label={g.label} value={form.breakdown[g.key]} onChange={(v) => setBreakdown(g.key, v)} />
+                  <Toggle key={g.key} label={g.label} checked={form.breakdown[g.key]} onChange={(v) => setBreakdown(g.key, v)} />
                 ))}
               </div>
             </section>

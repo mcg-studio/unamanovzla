@@ -722,21 +722,25 @@ a { color: var(--accent); }
 .input--err { border-color: var(--brand) !important; background: #fff5f5 !important; }
 .field-err { display: block; margin-top: 5px; font-size: 12px; font-weight: 600; color: var(--brand); }
 
-/* Steppers de conteo rapido */
-.stepper-grid { display: flex; flex-direction: column; gap: 8px; }
-.stepper {
-  display: flex; align-items: center; justify-content: space-between; gap: 12px;
-  border: 1px solid var(--border); border-radius: 12px; padding: 8px 10px 8px 14px; background: #fff;
+/* Toggles de presencia de grupos */
+.toggle-grid { display: flex; flex-direction: column; gap: 8px; }
+.toggle-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%;
+  border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px;
+  background: #fff; text-align: left; cursor: pointer; transition: border-color 0.15s, background 0.15s;
 }
-.stepper__label { font-size: 14px; font-weight: 600; }
-.stepper__controls { display: flex; align-items: center; gap: 4px; flex: none; }
-.stepper__btn {
-  width: 40px; height: 40px; flex: none; border-radius: 10px;
-  border: 1.5px solid var(--border); background: #f8fafc; color: var(--text);
-  font-size: 22px; line-height: 1; display: inline-flex; align-items: center; justify-content: center;
+.toggle-row--on { border-color: var(--brand); background: #fef2f2; }
+.toggle-row__label { font-size: 14px; font-weight: 600; color: var(--text); }
+.toggle-row__switch {
+  position: relative; flex: none; width: 44px; height: 26px; border-radius: 999px;
+  background: #cbd5e1; transition: background 0.18s;
 }
-.stepper__btn:disabled { opacity: 0.4; }
-.stepper__value { min-width: 32px; text-align: center; font-size: 16px; font-weight: 800; }
+.toggle-row--on .toggle-row__switch { background: var(--brand); }
+.toggle-row__knob {
+  position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%;
+  background: #fff; box-shadow: 0 1px 3px rgba(15,23,42,0.3); transition: transform 0.18s;
+}
+.toggle-row--on .toggle-row__knob { transform: translateX(18px); }
 
 /* Captura de medios */
 .media-actions { display: flex; flex-direction: column; gap: 10px; }
