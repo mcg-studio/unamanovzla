@@ -48,7 +48,8 @@ function Stepper({ label, value, onChange }) {
 // municipio a partir del pin. Nunca bloquea el flujo si falla.
 async function reverseGeocode(lat, lng) {
   try {
-    const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=12&addressdetails=1`
+    // zoom=14 da el nivel de municipio/ciudad sin caer en nombres de calle.
+    const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&zoom=14&addressdetails=1`
     const res = await fetch(url, { headers: { Accept: 'application/json' } })
     if (!res.ok) return null
     const data = await res.json()
@@ -59,7 +60,15 @@ async function reverseGeocode(lat, lng) {
       if (rawState.toLowerCase().includes(s.toLowerCase())) state = s
     }
     if (!state && /vargas/i.test(rawState)) state = 'La Guaira'
-    const municipio = a.city || a.town || a.municipality || a.county || a.city_district || a.suburb || ''
+    // En el OSM de Venezuela el municipio administrativo está en "county"
+    // (ej. "Municipio Baruta"). El campo "municipality" engañosamente trae la
+    // PARROQUIA (ej. "Parroquia El Cafetal"), por eso "county" va primero.
+    const rawMuni =
+      a.county || a.municipality || a.city || a.town || a.city_district || ''
+    const municipio = rawMuni
+      .replace(/^Municipio\s+(Aut[óo]nomo\s+)?/i, '')
+      .replace(/^Parroquia\s+/i, '')
+      .trim()
     return { state, municipio }
   } catch {
     return null
@@ -125,6 +134,8 @@ export default function NewLocationForm({ placedPoint, onRemark, onClose, onSent
   // estado/municipio automaticamente.
   useEffect(() => {
     if (!placedPoint) return
+    // Al marcar un punto se limpia cualquier error previo de "marca la ubicación".
+    setStepError('')
     let alive = true
     setGeoMsg('Detectando estado y municipio…')
     reverseGeocode(placedPoint.lat, placedPoint.lng).then((r) => {
